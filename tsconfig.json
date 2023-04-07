@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "rootDir": "src",
+    "target": "ES2022",
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "nodenext",
+    "moduleResolution": "node"
+  }
+}

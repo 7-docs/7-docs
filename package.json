@@ -1,0 +1,33 @@
+{
+  "name": "7-docs",
+  "version": "0.0.1",
+  "description": "Use any public GitHub repository as a source and ask questions through ChatGPT about it",
+  "type": "module",
+  "scripts": {
+    "ingest": "tsx ./src/command/ingest.ts",
+    "query": "tsx ./src/command/query.ts",
+    "format": "remark README.md -o"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@octokit/rest": "^19.0.7",
+    "@pinecone-database/pinecone": "^0.0.12",
+    "dotenv": "^16.0.3",
+    "gpt-3-encoder": "^1.1.4",
+    "minimatch": "^8.0.3",
+    "openai": "^3.2.1",
+    "remark": "^14.0.2",
+    "remark-gfm": "^3.0.1",
+    "strip-markdown": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.15.11",
+    "tsx": "^3.12.6",
+    "typescript": "^5.0.3"
+  }
+}
