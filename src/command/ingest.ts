@@ -1,8 +1,8 @@
 import { pinecone } from '../client/pinecone';
 import { createEmbedding } from '../client/openai';
 import { stripMarkdown, chunkSentences, getTitle } from '../util/text';
-import { processArrayInChunks, generateId } from '../util/array';
-import { fetchMarkdownFiles } from '../client/github';
+import { forEachChunked, generateId } from '../util/array';
+import { fetchFiles } from '../client/github';
 import {
   OPENAI_MAX_INPUT_TOKENS,
   PINECONE_INDEX,
@@ -18,7 +18,7 @@ import { getInitUsage, addTokens } from '../util/usage';
 
 const pineconeIndex = pinecone.Index(PINECONE_INDEX);
 
-const files = await fetchMarkdownFiles(GITHUB_REPO, GITHUB_FILES);
+const files = await fetchFiles(GITHUB_REPO, GITHUB_FILES);
 
 const CHUNK_DIVIDER = 0.1; // Keep under 0.9 as a safe guard. Lower means smaller embeddings/more fine-grained results.
 const CHUNK_SIZE = (OPENAI_MAX_INPUT_TOKENS / TOKENS_PER_WORD) * CHUNK_DIVIDER;
@@ -36,7 +36,7 @@ if (files.length > 0) {
     const { content, url, filePath } = file;
 
     const text = await stripMarkdown(content);
-    const title = getTitle(content) ?? filePath;
+    const title = getTitle(content) || filePath;
     const chunks = chunkSentences(text, CHUNK_SIZE);
 
     const requests = chunks.map(input => createEmbedding({ input, model: OPENAI_EMBEDDING_MODEL }));
@@ -52,7 +52,7 @@ if (files.length > 0) {
 
     counters.vectors += vectors.length;
 
-    processArrayInChunks(vectors, PINECONE_UPSERT_VECTOR_LIMIT, async vectors => {
+    forEachChunked(vectors, PINECONE_UPSERT_VECTOR_LIMIT, async vectors => {
       console.log(`Upserting ${vectors.length} vectors for ${filePath}`);
       const upsertRequest = { vectors, namespace: PINECONE_NAMESPACE };
       const response = await pineconeIndex.upsert({ upsertRequest });

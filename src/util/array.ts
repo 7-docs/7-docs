@@ -12,18 +12,13 @@ export const uniqueByProperty = <T, K extends keyof T>(arr: T[], property: K): T
   });
 };
 
-export const processArrayInChunks = <T>(
-  array: T[],
-  chunkSize: number = 100,
-  processChunk: (chunk: T[], index: number) => void
-) => {
+export const forEachChunked = <T>(array: T[], chunkSize: number, callbackFn: (chunk: T[]) => void) => {
   const arrayLength = array.length;
   let startIndex = 0;
-  let index = 0;
   while (startIndex < arrayLength) {
     const endIndex = Math.min(startIndex + chunkSize, arrayLength);
     const chunk = array.slice(startIndex, endIndex);
-    processChunk(chunk, index++);
+    callbackFn(chunk);
     startIndex = endIndex;
   }
 };

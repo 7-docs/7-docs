@@ -94,6 +94,6 @@ if (input) {
       console.log(response.links?.map(link => `- [${link.title}](${link.url})`).join('\n'));
     }
     if (response.usage) counters.usage = addTokens(counters.usage, [response.usage]);
-    console.log('\nToken usage: ', counters.usage);
+    console.log('\nOpenAI token usage: ', counters.usage);
   }
 }

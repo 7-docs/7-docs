@@ -19,21 +19,15 @@ const getFileData = async (repoId: string, filePath: string) => {
   return { filePath, url, content: Buffer.from(content, 'base64').toString() };
 };
 
-const getTree = async (repoId: string, sha: string = 'HEAD'): Promise<Array<any>> => {
+const getTree = async (repoId: string, tree_sha: string = 'HEAD'): Promise<Array<any>> => {
   const [owner, repo] = repoId.split('/');
-  const response = await octokit.rest.git.getTree({
-    owner,
-    repo,
-    tree_sha: sha,
-    recursive: 'true'
-  });
+  const response = await octokit.rest.git.getTree({ owner, repo, tree_sha, recursive: 'true' });
   return response.data.tree;
 };
 
-export const fetchMarkdownFiles = async (repoId: string, globPattern: string | string[]) => {
+export const fetchFiles = async (repoId: string, globPattern: string | string[]) => {
   const tree = await getTree(repoId);
   const isMatch = picomatch(globPattern);
   const files = tree.filter(file => file.type === 'blob' && isMatch(file.path));
-  const fileDataPromises = files.map(file => getFileData(repoId, file.path));
-  return Promise.all(fileDataPromises);
+  return Promise.all(files.map(file => getFileData(repoId, file.path)));
 };

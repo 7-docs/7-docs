@@ -14,7 +14,7 @@ export const stripMarkdown = async (input: string) => {
 
 export const getTitle = (markdown: string) => {
   const match = markdown.match(/(?<=# ).+/);
-  return match?.[0];
+  return match?.[0].trim();
 };
 
 export function chunkSentences(inputString: string, maxLength: number) {
