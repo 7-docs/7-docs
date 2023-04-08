@@ -8,9 +8,14 @@ const octokit = new Octokit({
 
 const getFileData = async (repoId: string, filePath: string) => {
   const [owner, repo] = repoId.split('/');
-  const response = await octokit.rest.repos.getContent({ owner, repo, path: filePath });
-  // @ts-ignore
-  const { content, html_url: url } = response.data;
+  const { data: fileContent } = await octokit.rest.repos.getContent({ owner, repo, path: filePath });
+
+  if (Array.isArray(fileContent) || fileContent.type !== 'file') {
+    console.warn(`Unexpected response from octokit.rest.repos.getContent for file ${filePath}`);
+    return { filePath, url: '', content: '' };
+  }
+
+  const { content, html_url: url } = fileContent;
   return { filePath, url, content: Buffer.from(content, 'base64').toString() };
 };
 
