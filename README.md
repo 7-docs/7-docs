@@ -4,10 +4,10 @@ Use any public GitHub repository as a source and ask questions through ChatGPT a
 
 Two steps to get it up and running:
 
-- **Create**: [Pinecone][1] account + index (a single instance is free)
-- **Ingest**: choose a public GitHub repo and use its Markdown files as data sources
+1.  **Create**: [Pinecone][1] account + index (a single instance is free)
+2.  **Ingest**: choose a public GitHub repo and use its Markdown files as data sources for ingestion
 
-It's ready to ask it anything like you would using ChatGPT.
+Then it's ready to ask it anything like you would using ChatGPT.
 
 ## Prerequisites
 
@@ -22,6 +22,8 @@ It's ready to ask it anything like you would using ChatGPT.
 - Make sure the Pinecone index has **1536** dimensions.
 - OpenAI recommends using the `cosine` distance function, so let's use that metric.
 
+You can use multiple, separated namespaces (set `PINECONE_NAMESPACE`) to ingest and query.
+
 ## GitHub
 
 - Point `GITHUB_REPO` to any public repo (i.e. `owner/repo`)
@@ -33,8 +35,6 @@ It's ready to ask it anything like you would using ChatGPT.
 Note that running the following commands uses OpenAI tokens. By default, the recommended [text-embedding-ada-002][6]
 model is used to create embeddings. Ingestion uses some tokens when ingesting lots of files. Queries use only a few
 tokens (using the [gpt-3.5-turbo][7] model by default). See the console for details.
-
-You can use multiple, separated namespaces (set `PINECONE_NAMESPACE`) to ingest and query.
 
 ### Ingest
 
