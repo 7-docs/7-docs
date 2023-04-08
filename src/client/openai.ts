@@ -1,12 +1,12 @@
-import { Configuration, OpenAIApi } from 'openai';
-import { OPENAI_API_KEY, OPENAI_ORGANIZATION } from '../env';
+import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from 'openai';
+import { OPENAI_API_KEY, OPENAI_COMPLETION_MODEL, OPENAI_ORGANIZATION, OPENAI_TOKENS_FOR_COMPLETION } from '../env';
 
 const configuration = new Configuration({
   apiKey: OPENAI_API_KEY,
   organization: OPENAI_ORGANIZATION
 });
 
-export const openai = new OpenAIApi(configuration);
+const openai = new OpenAIApi(configuration);
 
 type EmbeddingOptions = {
   input: string | string[];
@@ -22,3 +22,26 @@ export const createEmbedding = async (options: EmbeddingOptions) => {
   };
 };
 
+type CompletionOptions = {
+  messages: ChatCompletionRequestMessage[];
+};
+
+export const createChatCompletion = async ({ messages }: CompletionOptions) => {
+  const response = await openai.createChatCompletion({
+    model: OPENAI_COMPLETION_MODEL,
+    messages,
+    temperature: 0,
+    max_tokens: OPENAI_TOKENS_FOR_COMPLETION,
+    top_p: 1,
+    n: 1,
+    stream: false,
+    stop: undefined,
+    presence_penalty: 0,
+    frequency_penalty: 0
+  });
+
+  const text = response.data.choices[0].message?.content?.trim();
+  const usage = response.data.usage;
+
+  return { text, usage };
+};

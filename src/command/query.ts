@@ -1,20 +1,24 @@
-import { ParseArgsConfig, parseArgs } from 'util';
+import { parseArgs } from 'util';
 import { ChatCompletionRequestMessage } from 'openai';
 import { encode } from 'gpt-3-encoder';
-import { openai, createEmbedding } from '../client/openai';
+import { createEmbedding, createChatCompletion } from '../client/openai';
 import { pinecone } from '../client/pinecone';
 import {
   OPENAI_MAX_COMPLETION_TOKENS,
   OPENAI_TOKENS_FOR_COMPLETION,
   PINECONE_NAMESPACE,
   PINECONE_INDEX,
-  OPENAI_EMBEDDING_MODEL,
-  OPENAI_COMPLETION_MODEL
+  OPENAI_EMBEDDING_MODEL
 } from '../env';
 import { uniqueByProperty } from '../util/array';
+import { addTokens, getInitUsage } from '../util/usage';
 import type { MetaData } from '../types';
 
 const pineconeIndex = pinecone.Index(PINECONE_INDEX);
+
+const counters = {
+  usage: getInitUsage()
+};
 
 let input;
 try {
@@ -40,11 +44,11 @@ const getPrompt = (context: string, query: string) => {
 const availableTokens = OPENAI_MAX_COMPLETION_TOKENS - OPENAI_TOKENS_FOR_COMPLETION - encode(getPrompt('', '')).length;
 
 const ask = async (input: string) => {
-  const embedding = await createEmbedding({ input, model: OPENAI_EMBEDDING_MODEL });
+  const response = await createEmbedding({ input, model: OPENAI_EMBEDDING_MODEL });
 
   const results = await pineconeIndex.query({
     queryRequest: {
-      vector: embedding[0],
+      vector: response.embeddings[0],
       namespace: PINECONE_NAMESPACE,
       topK: 5,
       includeMetadata: true
@@ -75,22 +79,9 @@ const ask = async (input: string) => {
       content: prompt
     });
 
-    const response = await openai.createChatCompletion({
-      model: OPENAI_COMPLETION_MODEL,
-      messages: messages,
-      temperature: 0,
-      max_tokens: OPENAI_TOKENS_FOR_COMPLETION,
-      top_p: 1,
-      n: 1,
-      stream: false,
-      stop: undefined,
-      presence_penalty: 0,
-      frequency_penalty: 0
-    });
+    const { text, usage } = await createChatCompletion({ messages });
 
-    const text = response.data.choices[0].message?.content?.trim();
-
-    return { text, links };
+    return { text, usage, links };
   }
 };
 
@@ -99,8 +90,10 @@ if (input) {
   if (response) {
     console.log(response.text);
     if (response.links.length > 0) {
-      console.log('\nThe locations I used for this answer may contain more information:\n');
+      console.log('\nThe locations received to answer your question may contain more information:\n');
       console.log(response.links?.map(link => `- [${link.title}](${link.url})`).join('\n'));
     }
+    if (response.usage) counters.usage = addTokens(counters.usage, [response.usage]);
+    console.log('\nToken usage: ', counters.usage);
   }
 }
