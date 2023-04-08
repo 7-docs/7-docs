@@ -1,6 +1,6 @@
 {
   "name": "7-docs",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Use any public GitHub repository as a source and ask questions through ChatGPT about it",
   "type": "module",
   "scripts": {
