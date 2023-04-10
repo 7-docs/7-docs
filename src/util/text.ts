@@ -37,3 +37,5 @@ export function chunkSentences(inputString: string, maxLength: number) {
 
   return chunks;
 }
+
+export const ucFirst = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);

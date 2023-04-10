@@ -12,13 +12,17 @@ export const uniqueByProperty = <T, K extends keyof T>(arr: T[], property: K): T
   });
 };
 
-export const forEachChunked = <T>(array: T[], chunkSize: number, callbackFn: (chunk: T[]) => void) => {
+export const forEachChunkedAsync = async <T>(
+  array: T[],
+  chunkSize: number,
+  callbackFn: (chunk: T[]) => Promise<void>
+) => {
   const arrayLength = array.length;
   let startIndex = 0;
   while (startIndex < arrayLength) {
     const endIndex = Math.min(startIndex + chunkSize, arrayLength);
     const chunk = array.slice(startIndex, endIndex);
-    callbackFn(chunk);
+    await callbackFn(chunk);
     startIndex = endIndex;
   }
 };

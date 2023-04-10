@@ -1,6 +1,7 @@
 import { Octokit } from '@octokit/rest';
-import picomatch from 'picomatch';
-import { GITHUB_TOKEN } from '../env';
+import micromatch from 'micromatch';
+import { GITHUB_TOKEN } from '../constants.js';
+import { FetchFiles } from '../types.js';
 
 const octokit = new Octokit({
   auth: GITHUB_TOKEN
@@ -15,8 +16,8 @@ const getFileData = async (repoId: string, filePath: string) => {
     return { filePath, url: '', content: '' };
   }
 
-  const { content, html_url: url } = fileContent;
-  return { filePath, url, content: Buffer.from(content, 'base64').toString() };
+  const { content, html_url } = fileContent;
+  return { filePath, url: html_url ?? '', content: Buffer.from(content, 'base64').toString() };
 };
 
 const getTree = async (repoId: string, tree_sha: string = 'HEAD'): Promise<Array<any>> => {
@@ -25,9 +26,8 @@ const getTree = async (repoId: string, tree_sha: string = 'HEAD'): Promise<Array
   return response.data.tree;
 };
 
-export const fetchFiles = async (repoId: string, globPattern: string | string[]) => {
+export const fetchFiles: FetchFiles = async (patterns, repoId) => {
   const tree = await getTree(repoId);
-  const isMatch = picomatch(globPattern);
-  const files = tree.filter(file => file.type === 'blob' && isMatch(file.path));
+  const files = tree.filter(file => file.type === 'blob' && micromatch.isMatch(file.path, patterns));
   return Promise.all(files.map(file => getFileData(repoId, file.path)));
 };

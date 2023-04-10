@@ -1,12 +1,22 @@
 import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from 'openai';
-import { OPENAI_API_KEY, OPENAI_COMPLETION_MODEL, OPENAI_ORGANIZATION, OPENAI_TOKENS_FOR_COMPLETION } from '../env';
+import {
+  OPENAI_API_KEY,
+  OPENAI_COMPLETION_MODEL,
+  OPENAI_ORGANIZATION,
+  OPENAI_TOKENS_FOR_COMPLETION
+} from '../constants.js';
 
-const configuration = new Configuration({
-  apiKey: OPENAI_API_KEY,
-  organization: OPENAI_ORGANIZATION
-});
-
-const openai = new OpenAIApi(configuration);
+let openai: OpenAIApi;
+const getClient = () => {
+  if (openai) return openai;
+  if (!OPENAI_API_KEY) throw new Error('Missing OPENAI_API_KEY environment variable');
+  const configuration = new Configuration({
+    apiKey: OPENAI_API_KEY,
+    organization: OPENAI_ORGANIZATION
+  });
+  openai = new OpenAIApi(configuration);
+  return openai;
+};
 
 type EmbeddingOptions = {
   input: string | string[];
@@ -14,6 +24,7 @@ type EmbeddingOptions = {
 };
 
 export const createEmbedding = async (options: EmbeddingOptions) => {
+  const openai = getClient();
   const response = await openai.createEmbedding(options);
   if (!response.data.data[0].embedding) throw new Error('No embedding returned from the completions endpoint');
   return {
@@ -27,6 +38,7 @@ type CompletionOptions = {
 };
 
 export const createChatCompletion = async ({ messages }: CompletionOptions) => {
+  const openai = getClient();
   const response = await openai.createChatCompletion({
     model: OPENAI_COMPLETION_MODEL,
     messages,

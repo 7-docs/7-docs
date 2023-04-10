@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "nodenext",
+    "module": "ESNext",
     "moduleResolution": "node",
     "outDir": "dist",
     "rootDir": "src",
