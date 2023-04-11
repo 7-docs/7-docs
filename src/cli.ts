@@ -10,7 +10,7 @@ import { ConfigurationError } from './util/errors.js';
 
 const main = async () => {
   try {
-    const { command, source, db, repo, patterns, namespace, index, input } = await parseConfig();
+    const { command, source, db, repo, patterns, namespace, index, input, stream } = await parseConfig();
 
     switch (command) {
       case 'pinecone-set-index': {
@@ -37,11 +37,11 @@ const main = async () => {
         break;
       }
       case 'query': {
-        await query({ db, namespace, query: input });
+        await query({ db, namespace, query: input, stream });
         break;
       }
       default:
-        await query({ db, namespace, query: `${command} ${input}` });
+        await query({ db, namespace, query: `${command} ${input}`, stream });
         break;
     }
   } catch (error: unknown) {

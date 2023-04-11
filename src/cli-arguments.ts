@@ -37,6 +37,7 @@ query
   [query]                 Query
   --db [name]             Database to query. Options: pinecone, supabase (default: pinecone)
   --namespace [name]      Namespace to query
+  --no-stream             Don't stream the response
 
 Examples:
 
@@ -73,7 +74,8 @@ export const parseConfig = async () => {
       repo: { type: 'string' },
       index: { type: 'string' },
       namespace: { type: 'string' },
-      db: { type: 'string' }
+      db: { type: 'string' },
+      'no-stream': { type: 'boolean', default: false }
     }
   });
 
@@ -100,6 +102,7 @@ export const parseConfig = async () => {
     patterns,
     index,
     namespace: namespace.replace(/[.\/-]/g, '_'),
-    input
+    input,
+    stream: !parsedArgs.values['no-stream']
   };
 };

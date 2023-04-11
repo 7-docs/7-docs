@@ -16,6 +16,7 @@ type Options = {
   db?: string;
   namespace: string;
   query: string;
+  stream: boolean;
 };
 
 const intro = `Answer the question as truthfully as possible using the provided context, and if the answer is not contained within the text below, say "Sorry, I don't have that information.".`;
@@ -26,7 +27,7 @@ const getPrompt = (context: string, query: string) => {
 
 const availableTokens = OPENAI_MAX_COMPLETION_TOKENS - OPENAI_TOKENS_FOR_COMPLETION - encode(getPrompt('', '')).length;
 
-const ask = async ({ db, namespace, query }: Options) => {
+const ask = async ({ db, namespace, query, stream }: Options) => {
   const counters = {
     usage: getInitUsage()
   };
@@ -62,7 +63,7 @@ const ask = async ({ db, namespace, query }: Options) => {
       content: prompt
     });
 
-    const { text, usage } = await createChatCompletion({ messages });
+    const { text, usage } = await createChatCompletion({ messages, stream });
 
     if (usage) counters.usage = addTokens(counters.usage, [usage]);
 
@@ -70,17 +71,19 @@ const ask = async ({ db, namespace, query }: Options) => {
   }
 };
 
-export const query = async ({ db, namespace, query }: Options) => {
+export const query = async ({ db, namespace, query, stream }: Options) => {
   if (!db || !(db in targets)) throw new Error(`Invalid --db: ${db}`);
   if (query.length < 3) throw new Error('Query must exceed 2 characters');
 
-  const response = await ask({ db, namespace, query });
+  const response = await ask({ db, namespace, query, stream });
   if (response) {
-    console.log(response.text);
+    if (response.text) console.log(response.text);
+
     if (response.links.length > 0) {
       console.log('\nThe locations received to answer your question may contain more information:\n');
       console.log(response.links?.map(link => `- ${link.url ?? link.filePath}`).join('\n'));
     }
+
     if (response.counters) {
       const { total_tokens, prompt_tokens, completion_tokens } = response.counters.usage;
       console.log(`\nOpenAI token usage: ${total_tokens} (${prompt_tokens} prompt + ${completion_tokens} completion)`);
