@@ -1,4 +1,3 @@
-import _fs from 'node:fs/promises';
 import { ChatCompletionRequestMessage } from 'openai';
 import { encode } from 'gpt-3-encoder';
 import { createEmbedding, createChatCompletion } from '../client/openai.js';

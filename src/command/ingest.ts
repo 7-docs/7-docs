@@ -1,4 +1,3 @@
-import _fs from 'node:fs/promises';
 import { createEmbedding } from '../client/openai.js';
 import { stripMarkdown, chunkSentences, getTitle } from '../util/text.js';
 import { generateId } from '../util/array.js';
@@ -7,8 +6,8 @@ import * as fs from '../client/fs.js';
 import * as github from '../client/github.js';
 import { Pinecone } from '../client/pinecone.js';
 import { Supabase } from '../client/supabase.js';
-import type { MetaData } from '../types';
 import { getInitUsage, addTokens } from '../util/usage.js';
+import type { MetaData } from '../types';
 
 const sources = {
   github,

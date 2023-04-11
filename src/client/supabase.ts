@@ -42,7 +42,7 @@ export class Supabase implements VectorDatabase {
   }
 }
 
-export const createTable = async (name: string) => {
+export const createTable = (name: string) => {
   if (!name) throw new Error('No name provided with --namespace');
 
   const vectorExtenion = `CREATE EXTENSION IF NOT EXISTS vector;`;

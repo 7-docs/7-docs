@@ -15,12 +15,12 @@ const main = async () => {
     switch (command) {
       case 'pinecone-set-index': {
         const pinecone = new Pinecone();
-        pinecone.createOrSetIndex(index);
+        await pinecone.createOrSetIndex(index);
         break;
       }
       case 'pinecone-clear-namespace': {
         const pinecone = new Pinecone();
-        pinecone.clearNamespace(namespace);
+        await pinecone.clearNamespace(namespace);
         break;
       }
       case 'supabase-create-table': {
@@ -37,11 +37,11 @@ const main = async () => {
         break;
       }
       case 'query': {
-        query({ db, namespace, query: input });
+        await query({ db, namespace, query: input });
         break;
       }
       default:
-        query({ db, namespace, query: `${command} ${input}` });
+        await query({ db, namespace, query: `${command} ${input}` });
         break;
     }
   } catch (error: unknown) {
