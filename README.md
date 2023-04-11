@@ -1,15 +1,35 @@
 # 7-docs
 
-Use local files or any GitHub repository as a source, and ask questions through ChatGPT about it.
+Build a knowledge base and ask it questions through ChatGPT.
 
-Works with OpenAI and a [Pinecone][1] or [Supabase][2] vector database.
+`7d` is a powerful tool to ingest local or remote files and store them into a vector database, ready to get queried like
+you would with ChatGPT. Multiple sources can be combined into one namespace.
 
-## Install
+## Status
+
+This is still in an early alpha phase. There is a command-line interface, it supports text and Markdown files as input,
+uses OpenAI `text-embedding-ada-002` for embeddings, [Pinecone][1] and [Supabase][2] for vector storage, and the OpenAI
+`gpt-3.5-turbo` completion model.
+
+Ideas for extension:
+
+- Better support for source code files (e.g. Python, TypeScript).
+- Support more source file formats (e.g. PDF, HTML, web scraping).
+- Make it easy to create a user-friendly web UI to query.
+
+## Prerequisites
+
+- Node.js v16+
+- OpenAI API key
+- Pinecone or Supabase account, plus API keys
+- When ingesting lots of files from GitHub, a GitHub token
+
+## Installation
 
 You can install 7-docs in two ways:
 
-- Use a [global](#global) installation to manage knowledge base(s) from the command line.
-- Use a [local](#local) installation to manage the knowledge base(s) of a single repository.
+- [Global][3] to manage knowledge base(s) from the command line.
+- [Local][4] to manage the knowledge base(s) of a repository.
 
 ### Global
 
@@ -19,7 +39,7 @@ Use `7d` from anywhere to manage your personal knowledge bases:
 npm install --global 7-docs
 ```
 
-Get an [OpenAI API key][3] and store it:
+Get an [OpenAI API key][5] and make it available as en environment variable:
 
 ```shell
 export OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -41,20 +61,15 @@ Add `7d` to the `devDependencies` of a repository to manage its knowledge base(s
 npm install --save-dev 7-docs
 ```
 
-Store only the variables you need in a local `.env` file in the root of your project:
+Store the variables you need in a local `.env` file in the root of your project:
 
 ```shell
 OPENAI_API_KEY="sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-PINECONE_ENVIRONMENT="us-xxxxx-xxx"
-PINECONE_API_KEY="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-SUPABASE_URL="https://xxxxxxxxxxxxxxxxxxxx.supabase.co"
-SUPABASE_API_KEY="eyxxx.xxx.xxx"
-GITHUB_TOKEN="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 ```
 
 For local installations, use `npx 7d` (over just `7d`).
 
-Now let's choose either [Pinecone][4] or [Supabase][5]!
+Now let's choose either [Pinecone][6] or [Supabase][7]!
 
 ## Pinecone
 
@@ -92,7 +107,7 @@ export SUPABASE_URL="https://xxxxxxxxxxxxxxxxxxxx.supabase.co"
 export SUPABASE_API_KEY="ey..."
 ```
 
-Print the SQL query to enable [pgvector][6] and create a table (paste the output in the [Supabase web admin][7]):
+Print the SQL query to enable [pgvector][8] and create a table (paste the output in the [Supabase web admin][9]):
 
 ```shell
 7d supabase-create-table --namespace my-collection
@@ -124,37 +139,55 @@ You can start without it, but once you start fetching lots of files you'll need 
 
 ## Other commands
 
-Other convenience commands not mentioned yet.
+Other convenience flags and commands not mentioned yet.
+
+### `--help`
+
+Shows available commands and how they can be used:
+
+```shell
+7d --help
+```
+
+### `openai-list-models`
+
+List available OpenAI models:
+
+```shell
+7d openai-list-models
+```
 
 ### `pinecone-clear-namespace`
 
 Clear a single namespace from the current Pinecone index:
 
 ```shell
- 7d pinecone-clear-namespace --namespace my-collection
+7d pinecone-clear-namespace --namespace my-collection
 ```
 
 ## Token Usage
 
-The recommended [text-embedding-ada-002][8] model is used to create embeddings. Ingestion uses some tokens when
-ingesting lots of files. Queries use only a few tokens (using the [gpt-3.5-turbo][9] model by default). See the console
+The recommended [text-embedding-ada-002][10] model is used to create embeddings. Ingestion uses some tokens when
+ingesting lots of files. Queries use only a few tokens (using the [gpt-3.5-turbo][11] model by default). See the console
 for details.
 
 ## Inspired by
 
-- [Paul Kinlan][10]
-- [OpenAI Cookbook][11]
-- [Polymath][12]
+- [Paul Kinlan][12]
+- [OpenAI Cookbook][13]
+- [Polymath][14]
 
 [1]: https://www.pinecone.io
 [2]: https://supabase.com
-[3]: https://platform.openai.com/account/api-keys
-[4]: #pinecone
-[5]: #supabase
-[6]: https://supabase.com/docs/guides/database/extensions/pgvector
-[7]: https://app.supabase.com/projects
-[8]: https://platform.openai.com/docs/guides/embeddings/what-are-embeddings
-[9]: https://platform.openai.com/docs/guides/chat
-[10]: https://github.com/PaulKinlan/paul.kinlan.me
-[11]: https://github.com/openai/openai-cookbook
-[12]: https://github.com/polymath-ai/polymath-ai
+[3]: #global
+[4]: #local
+[5]: https://platform.openai.com/account/api-keys
+[6]: #pinecone
+[7]: #supabase
+[8]: https://supabase.com/docs/guides/database/extensions/pgvector
+[9]: https://app.supabase.com/projects
+[10]: https://platform.openai.com/docs/guides/embeddings/what-are-embeddings
+[11]: https://platform.openai.com/docs/guides/chat
+[12]: https://github.com/PaulKinlan/paul.kinlan.me
+[13]: https://github.com/openai/openai-cookbook
+[14]: https://github.com/polymath-ai/polymath-ai
