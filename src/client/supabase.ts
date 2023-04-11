@@ -1,5 +1,11 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { SUPABASE_URL, SUPABASE_API_KEY, OPENAI_VECTOR_DIMENSION } from '../constants.js';
+import {
+  SUPABASE_URL,
+  SUPABASE_API_KEY,
+  EMBEDDING_MATCH_COUNT,
+  SUPABASE_SIMILARITY_THRESHOLD,
+  OPENAI_OUTPUT_DIMENSIONS
+} from '../constants.js';
 import { VectorDatabase, UpsertVectorOptions, QueryOptions, MetaData } from '../types.js';
 import { set } from '../util/storage.js';
 
@@ -28,8 +34,8 @@ export class Supabase implements VectorDatabase {
   async query({ embedding, namespace }: QueryOptions): Promise<MetaData[]> {
     const { error, data } = await this.client.rpc(`match_${namespace}`, {
       query_embedding: embedding,
-      similarity_threshold: 0.78, // Choose an appropriate threshold for your data
-      match_count: 10 // Choose the number of matches
+      similarity_threshold: SUPABASE_SIMILARITY_THRESHOLD,
+      match_count: EMBEDDING_MATCH_COUNT
     });
     if (error instanceof Error) throw error;
     return (data as Results)?.map(d => JSON.parse(d.metadata)) ?? [];
@@ -41,10 +47,10 @@ export const createTable = async (name: string) => {
 
   const vectorExtenion = `CREATE EXTENSION IF NOT EXISTS vector;`;
 
-  const query = `CREATE TABLE IF NOT EXISTS ${name} (id uuid PRIMARY KEY, metadata jsonb, embedding vector(${OPENAI_VECTOR_DIMENSION}));`;
+  const query = `CREATE TABLE IF NOT EXISTS ${name} (id uuid PRIMARY KEY, metadata jsonb, embedding vector(${OPENAI_OUTPUT_DIMENSIONS}));`;
 
   const fnQuery = `CREATE OR REPLACE function match_${name} (
-    query_embedding vector(${OPENAI_VECTOR_DIMENSION}),
+    query_embedding vector(${OPENAI_OUTPUT_DIMENSIONS}),
     similarity_threshold float,
     match_count int
   )

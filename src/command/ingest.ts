@@ -2,7 +2,7 @@ import _fs from 'node:fs/promises';
 import { createEmbedding } from '../client/openai.js';
 import { stripMarkdown, chunkSentences, getTitle } from '../util/text.js';
 import { generateId } from '../util/array.js';
-import { OPENAI_MAX_INPUT_TOKENS, OPENAI_EMBEDDING_MODEL, OPENAI_TOKENS_PER_WORD } from '../constants.js';
+import { CHUNK_SIZE, OPENAI_EMBEDDING_MODEL } from '../constants.js';
 import * as fs from '../client/fs.js';
 import * as github from '../client/github.js';
 import { Pinecone } from '../client/pinecone.js';
@@ -19,9 +19,6 @@ const targets = {
   Pinecone,
   Supabase
 };
-
-const CHUNK_DIVIDER = 0.1; // Keep under 0.9 as a safe guard. Lower means smaller embeddings/more fine-grained results.
-const CHUNK_SIZE = (OPENAI_MAX_INPUT_TOKENS / OPENAI_TOKENS_PER_WORD) * CHUNK_DIVIDER;
 
 type Options = {
   source?: string;

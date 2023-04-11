@@ -3,9 +3,10 @@ import {
   PINECONE_ENVIRONMENT,
   PINECONE_API_KEY,
   PINECONE_UPSERT_VECTOR_LIMIT,
-  OPENAI_VECTOR_DIMENSION,
+  OPENAI_OUTPUT_DIMENSIONS,
   PINECONE_METRIC,
-  PINECONE_POD_TYPE
+  PINECONE_POD_TYPE,
+  EMBEDDING_MATCH_COUNT
 } from '../constants.js';
 import { get, set } from '../util/storage.js';
 import { forEachChunkedAsync } from '../util/array.js';
@@ -41,7 +42,7 @@ export class Pinecone implements VectorDatabase {
 
     const createRequest = {
       name,
-      dimension: OPENAI_VECTOR_DIMENSION,
+      dimension: OPENAI_OUTPUT_DIMENSIONS,
       metric: PINECONE_METRIC,
       podType: PINECONE_POD_TYPE
     };
@@ -50,7 +51,7 @@ export class Pinecone implements VectorDatabase {
       const indices = await pinecone.listIndexes();
       if (indices.indexOf(name) === -1) {
         await pinecone.createIndex({ createRequest });
-        console.log(`Created new index: ${name} (${OPENAI_VECTOR_DIMENSION}/${PINECONE_METRIC}/${PINECONE_POD_TYPE})`);
+        console.log(`Created new index: ${name} (${OPENAI_OUTPUT_DIMENSIONS}/${PINECONE_METRIC}/${PINECONE_POD_TYPE})`);
         console.log('Please wait a second or two until its ready and try again');
       }
       set('db', 'type', 'pinecone');
@@ -93,7 +94,7 @@ export class Pinecone implements VectorDatabase {
       queryRequest: {
         vector: embedding,
         namespace,
-        topK: 5,
+        topK: EMBEDDING_MATCH_COUNT,
         includeMetadata: true
       }
     });

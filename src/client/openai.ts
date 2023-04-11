@@ -2,20 +2,23 @@ import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from 'openai';
 import {
   OPENAI_API_KEY,
   OPENAI_COMPLETION_MODEL,
+  OPENAI_COMPLETION_N,
+  OPENAI_COMPLETION_TEMPERATURE,
+  OPENAI_COMPLETION_TOP_P,
   OPENAI_ORGANIZATION,
   OPENAI_TOKENS_FOR_COMPLETION
 } from '../constants.js';
 
-let openai: OpenAIApi;
+let _openai: OpenAIApi;
 const getClient = () => {
-  if (openai) return openai;
+  if (_openai) return _openai;
   if (!OPENAI_API_KEY) throw new Error('Missing OPENAI_API_KEY environment variable');
   const configuration = new Configuration({
     apiKey: OPENAI_API_KEY,
     organization: OPENAI_ORGANIZATION
   });
-  openai = new OpenAIApi(configuration);
-  return openai;
+  _openai = new OpenAIApi(configuration);
+  return _openai;
 };
 
 type EmbeddingOptions = {
@@ -42,10 +45,10 @@ export const createChatCompletion = async ({ messages }: CompletionOptions) => {
   const response = await openai.createChatCompletion({
     model: OPENAI_COMPLETION_MODEL,
     messages,
-    temperature: 0,
+    temperature: OPENAI_COMPLETION_TEMPERATURE,
     max_tokens: OPENAI_TOKENS_FOR_COMPLETION,
-    top_p: 1,
-    n: 1,
+    top_p: OPENAI_COMPLETION_TOP_P,
+    n: OPENAI_COMPLETION_N,
     stream: false,
     stop: undefined,
     presence_penalty: 0,
