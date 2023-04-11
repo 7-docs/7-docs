@@ -11,7 +11,10 @@ import {
 import { get, set } from '../util/storage.js';
 import { forEachChunkedAsync } from '../util/array.js';
 import { ConfigurationError } from '../util/errors.js';
+import type { ScoredVector } from '@pinecone-database/pinecone';
 import type { MetaData, UpsertVectorOptions, VectorDatabase, QueryOptions } from '../types.js';
+
+const sortByScoreDesc = (a: ScoredVector, b: ScoredVector) => (a.score && b.score ? b.score - a.score : 0);
 
 const pinecone = new PineconeClient();
 
@@ -98,7 +101,12 @@ export class Pinecone implements VectorDatabase {
         includeMetadata: true
       }
     });
-    return results.matches?.map(match => match.metadata).filter((m): m is MetaData => !!m) ?? [];
+    return (
+      results.matches
+        ?.sort(sortByScoreDesc)
+        .map(match => match.metadata)
+        .filter((m): m is MetaData => !!m) ?? []
+    );
   }
 
   async clearNamespace(namespace: string) {
