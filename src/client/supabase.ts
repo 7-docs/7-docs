@@ -15,13 +15,10 @@ export class Supabase implements VectorDatabase {
   }
 
   async upsertVectors({ namespace, vectors }: UpsertVectorOptions) {
-    console.log(`Upserting ${vectors.length} vectors for ${vectors[0].metadata?.filePath}`);
-    let vectorCount = 0;
     const rows = vectors.map(v => ({ id: v.id, embedding: v.values, metadata: JSON.stringify(v.metadata) }));
     const { error } = await this.client.from(namespace).upsert(rows);
     if (error instanceof Error) throw error;
-    if (!error) vectorCount += vectors.length;
-    return vectorCount;
+    return vectors.length;
   }
 
   async query({ embedding, namespace }: QueryOptions): Promise<MetaData[]> {

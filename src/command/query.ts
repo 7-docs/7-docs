@@ -1,5 +1,6 @@
 import { ChatCompletionRequestMessage } from 'openai';
 import { encode } from 'gpt-3-encoder';
+import ora from 'ora';
 import { createEmbedding, createChatCompletion } from '../client/openai.js';
 import { Pinecone } from '../client/pinecone.js';
 import { Supabase } from '../client/supabase.js';
@@ -27,66 +28,74 @@ const getPrompt = (context: string, query: string) => {
 
 const availableTokens = OPENAI_MAX_COMPLETION_TOKENS - OPENAI_TOKENS_FOR_COMPLETION - encode(getPrompt('', '')).length;
 
-const ask = async ({ db, namespace, query, stream }: Options) => {
-  const counters = {
-    usage: getInitUsage()
-  };
-
-  const response = await createEmbedding({ input: query, model: OPENAI_EMBEDDING_MODEL });
-
-  counters.usage = addTokens(counters.usage, [response.usage]);
-
-  const DB = new targets[db as keyof typeof targets]();
-
-  const metadata = await DB.query({ embedding: response.embeddings[0], namespace });
-
-  if (metadata.length === 0) return { text: `No results from ${db} query.`, links: [], counters };
-
-  const links = uniqueByProperty(metadata, 'url');
-  const text = metadata.map(metadata => metadata.content);
-  const [, promptText] = text.reduce(
-    ([remainingTokens, context], text) => {
-      const tokens = encode(text).length;
-      if (tokens > remainingTokens) return [remainingTokens, context];
-      return [remainingTokens - tokens, context + '\n' + text];
-    },
-    [availableTokens, ''] as [number, string]
-  );
-
-  if (text && text.length > 0) {
-    const prompt = getPrompt(promptText, query);
-
-    const messages: ChatCompletionRequestMessage[] = [];
-
-    messages.push({
-      role: 'user',
-      content: prompt
-    });
-
-    const { text, usage } = await createChatCompletion({ messages, stream });
-
-    if (usage) counters.usage = addTokens(counters.usage, [usage]);
-
-    return { text, links, counters };
-  }
-};
-
 export const query = async ({ db, namespace, query, stream }: Options) => {
   if (!db || !(db in targets)) throw new Error(`Invalid --db: ${db}`);
   if (query.length < 3) throw new Error('Query must exceed 2 characters');
 
-  const response = await ask({ db, namespace, query, stream });
-  if (response) {
-    if (response.text) console.log(response.text);
+  const counters = {
+    usage: getInitUsage()
+  };
 
-    if (response.links.length > 0) {
-      console.log('\nThe locations received to answer your question may contain more information:\n');
-      console.log(response.links?.map(link => `- ${link.url ?? link.filePath}`).join('\n'));
-    }
+  const spinner = ora(`Creating query embedding`).start();
 
-    if (response.counters) {
-      const { total_tokens, prompt_tokens, completion_tokens } = response.counters.usage;
-      console.log(`\nOpenAI token usage: ${total_tokens} (${prompt_tokens} prompt + ${completion_tokens} completion)`);
+  try {
+    const response = await createEmbedding({ input: query, model: OPENAI_EMBEDDING_MODEL });
+
+    counters.usage = addTokens(counters.usage, [response.usage]);
+
+    const DB = new targets[db as keyof typeof targets]();
+
+    spinner.text = `Querying ${db} for matching vectors`;
+
+    const metadata = await DB.query({ embedding: response.embeddings[0], namespace });
+
+    if (metadata.length === 0) {
+      throw new Error(`No results returned from ${db} query`);
+    } else {
+      const links = uniqueByProperty(metadata, 'url');
+      const text = metadata.map(metadata => metadata.content);
+      const [, promptText] = text.reduce(
+        ([remainingTokens, context], text) => {
+          const tokens = encode(text).length;
+          if (tokens > remainingTokens) return [remainingTokens, context];
+          return [remainingTokens - tokens, context + '\n' + text];
+        },
+        [availableTokens, ''] as [number, string]
+      );
+
+      if (text && text.length > 0) {
+        const prompt = getPrompt(promptText, query);
+
+        const messages: ChatCompletionRequestMessage[] = [];
+
+        messages.push({
+          role: 'user',
+          content: prompt
+        });
+
+        spinner.text = `Requesting OpenAI chat completion`;
+
+        if (stream) spinner.succeed('Streaming response:');
+
+        const { text, usage } = await createChatCompletion({ messages, stream });
+
+        if (!stream) spinner.succeed();
+
+        if (usage) counters.usage = addTokens(counters.usage, [usage]);
+
+        if (text) console.log(text);
+
+        if (links.length > 0) {
+          console.log('\nThe locations used to answer your question may contain more information:\n');
+          console.log(links?.map(link => `- ${link.url ?? link.filePath}`).join('\n'));
+        }
+      }
     }
+  } catch (error) {
+    if (error instanceof Error) spinner.fail(error.message);
+    else throw error;
+  } finally {
+    const { total_tokens, prompt_tokens, completion_tokens } = counters.usage;
+    ora(`OpenAI token usage: ${total_tokens} (${prompt_tokens} prompt + ${completion_tokens} completion)`).info();
   }
 };

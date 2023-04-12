@@ -10,7 +10,6 @@ import {
 } from '../constants.js';
 import { get, set } from '../util/storage.js';
 import { forEachChunkedAsync } from '../util/array.js';
-import { ConfigurationError } from '../util/errors.js';
 import type { ScoredVector } from '@pinecone-database/pinecone';
 import type { MetaData, UpsertVectorOptions, VectorDatabase, QueryOptions } from '../types.js';
 
@@ -19,7 +18,7 @@ const sortByScoreDesc = (a: ScoredVector, b: ScoredVector) => (a.score && b.scor
 const pinecone = new PineconeClient();
 
 export class Pinecone implements VectorDatabase {
-  index: undefined | string;
+  indexName: undefined | string;
   isInitialized = false;
 
   async init() {
@@ -33,60 +32,58 @@ export class Pinecone implements VectorDatabase {
       apiKey: PINECONE_API_KEY
     });
 
-    this.index = get('pinecone', 'index');
+    this.indexName = get('pinecone', 'index');
 
     this.isInitialized = true;
   }
 
   async createOrSetIndex(name: string) {
-    if (!name) throw new ConfigurationError('Please provide name of index');
+    if (!name) throw new Error('Please provide name of index');
 
     await this.init();
 
-    const createRequest = {
-      name,
-      dimension: OPENAI_OUTPUT_DIMENSIONS,
-      metric: PINECONE_METRIC,
-      podType: PINECONE_POD_TYPE
-    };
+    set('db', 'type', 'pinecone');
+    set('pinecone', 'index', name);
+    this.indexName = name;
 
-    try {
-      const indices = await pinecone.listIndexes();
-      if (indices.indexOf(name) === -1) {
-        await pinecone.createIndex({ createRequest });
-        console.log(`Created new index: ${name} (${OPENAI_OUTPUT_DIMENSIONS}/${PINECONE_METRIC}/${PINECONE_POD_TYPE})`);
-        console.log('Please wait a second or two until its ready and try again');
-      }
-      set('db', 'type', 'pinecone');
-      set('pinecone', 'index', name);
-      this.index = name;
-      console.log(`Using pinecone index: ${name}`);
-    } catch (error) {
-      if (error instanceof Error) console.warn(error.message);
+    const indices = await pinecone.listIndexes();
+    if (indices.indexOf(name) === -1) {
+      const createRequest = {
+        name,
+        dimension: OPENAI_OUTPUT_DIMENSIONS,
+        metric: PINECONE_METRIC,
+        podType: PINECONE_POD_TYPE
+      };
+
+      await pinecone.createIndex({ createRequest });
+
+      return [
+        `Created new index: ${name} (${OPENAI_OUTPUT_DIMENSIONS}/${PINECONE_METRIC}/${PINECONE_POD_TYPE})`,
+        'Please wait a second or two until its ready to start ingestion.'
+      ].join('\n');
     }
   }
 
   async getIndex() {
     await this.init();
-    if (!this.index) throw new ConfigurationError('No index selected. Use: 7d pinecone-set-index --index [name]');
-    return pinecone.Index(this.index);
+    if (!this.indexName) throw new Error('No index selected. Use: 7d pinecone-set-index --index [name]');
+    return pinecone.Index(this.indexName);
+  }
+
+  async getIndexName() {
+    await this.init();
+    if (!this.indexName) throw new Error('No index selected. Use: 7d pinecone-set-index --index [name]');
+    return this.indexName;
   }
 
   async upsertVectors({ namespace, vectors }: UpsertVectorOptions) {
     const client = await this.getIndex();
     let v = 0;
     await forEachChunkedAsync(vectors, PINECONE_UPSERT_VECTOR_LIMIT, async vectors => {
-      console.log(`Upserting ${vectors.length} vectors for ${vectors[0].metadata?.filePath}`);
       const upsertRequest = { vectors, namespace };
-      try {
-        const response = await client.upsert({ upsertRequest });
-        if (response.upsertedCount !== vectors.length)
-          console.warn('Pinecone response did not match request:', response);
-        v += vectors.length;
-      } catch (error) {
-        if (error instanceof Error) console.log(error.message);
-        else throw error;
-      }
+      const response = await client.upsert({ upsertRequest });
+      if (response.upsertedCount !== vectors.length) console.warn('Pinecone response did not match request:', response);
+      v += vectors.length;
     });
     return v;
   }
@@ -112,6 +109,5 @@ export class Pinecone implements VectorDatabase {
   async clearNamespace(namespace: string) {
     const client = await this.getIndex();
     await client.delete1({ deleteAll: true, namespace });
-    console.log(`Cleared namespace ${namespace}`);
   }
 }

@@ -1,3 +1,4 @@
+import ora from 'ora';
 import { createEmbedding } from '../client/openai.js';
 import { stripMarkdown, chunkSentences, getTitle } from '../util/text.js';
 import { generateId } from '../util/array.js';
@@ -32,10 +33,14 @@ export const ingest = async ({ source, repo, patterns, db, namespace }: Options)
   if (!db || !(db in targets)) throw new Error(`Invalid --db: ${db}`);
   if (source === 'github' && !repo) throw new Error('No --repo provided');
 
+  const spinner = ora(`Fetching files`).start();
+
   const files = await sources[source as keyof typeof sources].fetchFiles(patterns, repo);
 
+  spinner.succeed();
+
   if (files.length > 0) {
-    console.log(`Connecting to OpenAI and ${db} (${namespace})`);
+    const spinner = ora('Creating and upserting vectors').start();
 
     const DB = new targets[db as keyof typeof targets]();
 
@@ -45,34 +50,46 @@ export const ingest = async ({ source, repo, patterns, db, namespace }: Options)
       usage: getInitUsage()
     };
 
-    for (const file of files) {
-      const { content, url, filePath } = file;
+    try {
+      for (const file of files) {
+        const { content, url, filePath } = file;
 
-      const text = await stripMarkdown(content);
-      const title = getTitle(content) || filePath;
-      const chunks = chunkSentences(text, CHUNK_SIZE);
+        spinner.text = `Creating and upserting embedding for: ${filePath}`;
 
-      const requests = chunks.map(input => createEmbedding({ input, model: OPENAI_EMBEDDING_MODEL }));
-      const responses = await Promise.all(requests);
-      const embeddings = responses.flatMap(response => response.embeddings);
+        const text = await stripMarkdown(content);
+        const title = getTitle(content) || filePath;
+        const chunks = chunkSentences(text, CHUNK_SIZE);
 
-      const vectors = embeddings.map((values, index) => {
-        const text = chunks[index];
-        const id = generateId(filePath + '\n' + text.trim());
-        const metadata: MetaData = { title, url, filePath, content: text };
-        return { id, values, metadata };
-      });
+        const requests = chunks.map(input => createEmbedding({ input, model: OPENAI_EMBEDDING_MODEL }));
+        const responses = await Promise.all(requests);
+        const embeddings = responses.flatMap(response => response.embeddings);
 
-      const insertedVectorCount = await DB.upsertVectors({ namespace, vectors });
+        const vectors = embeddings.map((values, index) => {
+          const text = chunks[index];
+          const id = generateId(filePath + '\n' + text.trim());
+          const metadata: MetaData = { title, url, filePath, content: text };
+          return { id, values, metadata };
+        });
 
-      counters.vectors += insertedVectorCount;
+        const insertedVectorCount = await DB.upsertVectors({ namespace, vectors });
 
-      const usages = responses.map(response => response.usage);
-      counters.usage = addTokens(counters.usage, usages);
+        counters.vectors += insertedVectorCount;
+
+        const usages = responses.map(response => response.usage);
+        counters.usage = addTokens(counters.usage, usages);
+      }
+
+      spinner.succeed();
+    } catch (error) {
+      if (error instanceof Error) spinner.fail(error.message);
+      else throw error;
+    } finally {
+      const messages = [
+        `Fetched ${counters.files} file(s) from ${source}`,
+        `used ${counters.usage.total_tokens} OpenAI tokens`,
+        `upserted ${counters.vectors} vectors to ${db}`
+      ];
+      ora(messages.join(', ')).info();
     }
-
-    console.log(`Files fetched from ${source}: ${counters.files}`);
-    console.log(`OpenAI tokens used: ${counters.usage.total_tokens}`);
-    console.log(`Vectors upserted to ${db}: ${counters.vectors}`);
   }
 };

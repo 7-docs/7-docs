@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { parseConfig, helpText } from './cli-arguments.js';
+import { parseConfig } from './cli-arguments.js';
 import { ingest } from './command/ingest.js';
 import { openaiListModels } from './command/openai-list-models.js';
 import { pineconeClearNamespace } from './command/pinecone-clear-namespace.js';
@@ -8,7 +8,6 @@ import { pineconeSetIndex } from './command/pinecone-set-index.js';
 import { query } from './command/query.js';
 import { createTable } from './command/supabase-create-table.js';
 import { set } from './util/storage.js';
-import { ConfigurationError } from './util/errors.js';
 
 const main = async () => {
   try {
@@ -49,9 +48,8 @@ const main = async () => {
         break;
     }
   } catch (error: unknown) {
-    if (error instanceof ConfigurationError) {
+    if (error instanceof Error) {
       console.error(error.message);
-      console.log('\n' + helpText);
       process.exit(1);
     }
     throw error;
