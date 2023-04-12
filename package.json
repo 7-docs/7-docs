@@ -1,6 +1,6 @@
 {
   "name": "7-docs",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Build a knowledge base and ask it questions through ChatGPT",
   "bin": {
     "7d": "./dist/cli.js"
