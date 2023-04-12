@@ -7,15 +7,31 @@ export const helpText = `Tool to query content based on local files or GitHub re
 Usage: 7h [command] [options]
 
 Commands:
+  ingest
+  query (default)
+
+ingest
+  --source [name]         Source to fetch content from. Options: fs, github (default: fs)
+  --repo [owner/repo]     Repository to fetch file contents from (only required for --source github)
+  --files [pattern]       Glob patterns for the source text files (can be repeated)
+  --db [name]             Target database to store the embedding vectors. Options: pinecone, supabase (default: pinecone)
+  --namespace [name]      Namespace to store the embedding vectors
+
+query
+  [input]                 Query input
+  --db [name]             Database to query. Options: pinecone, supabase (default: pinecone)
+  --namespace [name]      Namespace to query
+  --no-stream             Don't stream the response
+
+Additional helper commands:
   set
   pinecone-set-index
   pinecone-clear-namespace
   supabase-create-table
-  ingest
-  query (default)
+  openai-list-models
 
 set
-  name value              Store name and value (alternative to exporting environment variables)
+  [name] [value]          Store name with value (alternative to exporting environment variables)
 
 pinecone-set-index
   --index [name]          Create or set index
@@ -26,18 +42,8 @@ pinecone-clear-namespace
 supabase-create-table
   --namespace [name]      Print SQL query to enable pgvector and create table with function in Supabase SQL Editor
 
-ingest
-  --source [name]         Source to fetch content from. Options: fs, github (default: fs)
-  --repo [owner/repo]     Repository to fetch file contents from (only required for --source github)
-  --files [pattern]       Glob patterns for the source text files (can be repeated)
-  --db [name]             Where to store/query the embedding vectors. Options: pinecone, supabase (default: pinecone)
-  --namespace [name]      Namespace to store the embedding vectors
+openai-list-models        Show list of available OpenAI models
 
-query
-  [query]                 Query
-  --db [name]             Database to query. Options: pinecone, supabase (default: pinecone)
-  --namespace [name]      Namespace to query
-  --no-stream             Don't stream the response
 
 Examples:
 
@@ -50,7 +56,7 @@ $ 7d Can you give a summary?
 > Using Supabase
 
 $ 7d supabase-create-table --namespace knip
-$ 7d ingest --files README.md --namespace my-namespace
+$ 7d ingest --files README.md --files 'docs/**/*.md' --namespace my-namespace
 $ 7d Can you give an introduction?
 
 > Using a GitHub repo
