@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 
 import { parseConfig, helpText } from './cli-arguments.js';
-import { Pinecone } from './client/pinecone.js';
-import { createTable } from './client/supabase.js';
 import { ingest } from './command/ingest.js';
-import { models } from './command/models.js';
+import { openaiListModels } from './command/openai-list-models.js';
+import { pineconeClearNamespace } from './command/pinecone-clear-namespace.js';
+import { pineconeSetIndex } from './command/pinecone-set-index.js';
 import { query } from './command/query.js';
+import { createTable } from './command/supabase-create-table.js';
 import { set } from './util/storage.js';
 import { ConfigurationError } from './util/errors.js';
 
@@ -15,13 +16,11 @@ const main = async () => {
 
     switch (command) {
       case 'pinecone-set-index': {
-        const pinecone = new Pinecone();
-        await pinecone.createOrSetIndex(index);
+        await pineconeSetIndex(index);
         break;
       }
       case 'pinecone-clear-namespace': {
-        const pinecone = new Pinecone();
-        await pinecone.clearNamespace(namespace);
+        await pineconeClearNamespace(namespace);
         break;
       }
       case 'supabase-create-table': {
@@ -33,8 +32,8 @@ const main = async () => {
         set('env', key, value);
         break;
       }
-      case 'models': {
-        await models();
+      case 'openai-list-models': {
+        await openaiListModels();
         break;
       }
       case 'ingest': {
