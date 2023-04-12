@@ -5,6 +5,8 @@ Build a knowledge base and ask it questions through ChatGPT.
 `7d` is a powerful tool to ingest local or remote files and store them into a vector database, ready to get queried like
 you would with ChatGPT. Multiple sources can be combined into one namespace.
 
+![Demo of ingest and query](./assets/ingest-and-query.gif)
+
 ## Status
 
 This is still in an early alpha phase. There is a command-line interface, it supports text and Markdown files as input,
@@ -86,6 +88,8 @@ Create or select an index:
 7d pinecone-set-index --index my-index
 ```
 
+![Demo of Pinecone index creation](assets/pinecone-set-index.gif)
+
 Let's ingest some text or Markdown files, make sure to adjust the `--files` pattern to match yours:
 
 ```shell
@@ -136,6 +140,8 @@ Instead of local files, ingest files from any GitHub repo, for instance:
 You can start without it, but once you start fetching lots of files you'll need to set `GITHUB_TOKEN`:
 
     export GITHUB_TOKEN="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
+![Demo of ingest and query](./assets/ingest-and-query-2.gif)
 
 ## Other commands
 
