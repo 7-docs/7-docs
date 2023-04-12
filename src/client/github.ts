@@ -2,6 +2,9 @@ import { Octokit } from '@octokit/rest';
 import micromatch from 'micromatch';
 import { GITHUB_TOKEN } from '../constants.js';
 import { FetchFiles } from '../types.js';
+import type { RestEndpointMethodTypes } from '@octokit/rest';
+
+type Tree = RestEndpointMethodTypes['git']['getTree']['response']['data']['tree'];
 
 const octokit = new Octokit({
   auth: GITHUB_TOKEN
@@ -20,7 +23,7 @@ const getFileData = async (repoId: string, filePath: string) => {
   return { filePath, url: html_url ?? '', content: Buffer.from(content, 'base64').toString() };
 };
 
-const getTree = async (repoId: string, tree_sha: string = 'HEAD'): Promise<Array<any>> => {
+const getTree = async (repoId: string, tree_sha: string = 'HEAD'): Promise<Tree> => {
   const [owner, repo] = repoId.split('/');
   const response = await octokit.rest.git.getTree({ owner, repo, tree_sha, recursive: 'true' });
   return response.data.tree;
@@ -28,6 +31,6 @@ const getTree = async (repoId: string, tree_sha: string = 'HEAD'): Promise<Array
 
 export const fetchFiles: FetchFiles = async (patterns, repoId) => {
   const tree = await getTree(repoId);
-  const files = tree.filter(file => file.type === 'blob' && micromatch.isMatch(file.path, patterns));
-  return Promise.all(files.map(file => getFileData(repoId, file.path)));
+  const files = tree.filter(file => file.path && file.type === 'blob' && micromatch.isMatch(file.path, patterns));
+  return Promise.all(files.map(file => getFileData(repoId, file.path!)));
 };
