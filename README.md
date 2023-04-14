@@ -1,11 +1,22 @@
 # 7-docs
 
-Build a knowledge base and ask it questions through ChatGPT.
+Build a knowledge base and ask it questions through OpenAI APIs.
 
-`7d` is a powerful tool to ingest local or remote files and store them into a vector database, ready to get queried like
-you would with ChatGPT. Multiple sources can be combined into one namespace.
+`7d` is a powerful tool to ingest text files and store them in a vector database, ready to get queried like you would
+with ChatGPT. Multiple sources can be combined into one namespace.
+
+## Impression
 
 ![Demo of ingest and query](./assets/ingest-and-query.gif)
+
+## Content
+
+- [Status](#status)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Pinecone](#pinecone)
+- [Supabase](#supabase)
+- [GitHub](#github)
 
 ## Status
 
@@ -15,6 +26,7 @@ uses OpenAI `text-embedding-ada-002` for embeddings, [Pinecone][1] and [Supabase
 
 Ideas for extension:
 
+- Make it chatty, conversational (it's only single shots now)
 - Better support for source code files (e.g. Python, TypeScript).
 - Support more source file formats (e.g. PDF, HTML, web scraping).
 - Make it easy to create a user-friendly web UI to query.
@@ -75,20 +87,20 @@ Now let's choose either [Pinecone][6] or [Supabase][7]!
 
 ## Pinecone
 
-Make sure to have a Pinecone account and set `PINECONE_ENVIRONMENT` and `PINECONE_API_KEY`:
+Make sure to have a Pinecone account and set `PINECONE_URL` and `PINECONE_API_KEY`:
 
 ```shell
-export PINECONE_ENVIRONMENT=us-xxxxx-xxx
+export PINECONE_URL=xxxxx-xxxxxxx.svc.us-xxxxx-gcp.pinecone.io
 export PINECONE_API_KEY=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 ```
 
 Create or select an index:
 
 ```shell
-7d pinecone-set-index --index my-index
+7d pinecone-create-index --index my-index
 ```
 
-![Demo of Pinecone index creation](assets/pinecone-set-index.gif)
+![Demo of Pinecone index creation](assets/pinecone-create-index.gif)
 
 Let's ingest some text or Markdown files, make sure to adjust the `--files` pattern to match yours:
 

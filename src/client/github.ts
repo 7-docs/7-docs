@@ -1,6 +1,6 @@
 import { Octokit } from '@octokit/rest';
 import micromatch from 'micromatch';
-import { GITHUB_TOKEN } from '../constants.js';
+import { GITHUB_TOKEN } from '../env.js';
 import { FetchFiles } from '../types.js';
 import type { RestEndpointMethodTypes } from '@octokit/rest';
 

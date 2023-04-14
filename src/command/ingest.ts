@@ -1,5 +1,4 @@
-import ora from 'ora';
-import { createEmbedding } from '../client/openai.js';
+import ora from '../util/ora.js';
 import { stripMarkdown, chunkSentences, getTitle } from '../util/text.js';
 import { generateId } from '../util/array.js';
 import { CHUNK_SIZE, OPENAI_EMBEDDING_MODEL } from '../constants.js';
@@ -8,6 +7,8 @@ import * as github from '../client/github.js';
 import { Pinecone } from '../client/pinecone.js';
 import { Supabase } from '../client/supabase.js';
 import { getInitUsage, addTokens } from '../util/usage.js';
+import { OpenAI } from '../client/openai/v1/client.js';
+import { OPENAI_API_KEY } from '../env.js';
 import type { MetaData } from '../types';
 
 const sources = {
@@ -32,6 +33,8 @@ export const ingest = async ({ source, repo, patterns, db, namespace }: Options)
   if (!source || !(source in sources)) throw new Error(`Invalid --source: ${source}`);
   if (!db || !(db in targets)) throw new Error(`Invalid --db: ${db}`);
   if (source === 'github' && !repo) throw new Error('No --repo provided');
+
+  const client = new OpenAI(OPENAI_API_KEY);
 
   const spinner = ora(`Fetching files`).start();
 
@@ -60,7 +63,7 @@ export const ingest = async ({ source, repo, patterns, db, namespace }: Options)
         const title = getTitle(content) || filePath;
         const chunks = chunkSentences(text, CHUNK_SIZE);
 
-        const requests = chunks.map(input => createEmbedding({ input, model: OPENAI_EMBEDDING_MODEL }));
+        const requests = chunks.map(input => client.createEmbeddings({ input, model: OPENAI_EMBEDDING_MODEL }));
         const responses = await Promise.all(requests);
         const embeddings = responses.flatMap(response => response.embeddings);
 
@@ -79,7 +82,7 @@ export const ingest = async ({ source, repo, patterns, db, namespace }: Options)
         counters.usage = addTokens(counters.usage, usages);
       }
 
-      spinner.succeed();
+      spinner.succeed('Creating and upserting vectors');
     } catch (error) {
       if (error instanceof Error) spinner.fail(error.message);
       else throw error;

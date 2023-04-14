@@ -1,61 +1,47 @@
-import { PineconeClient } from '@pinecone-database/pinecone';
+import { listIndexes } from './pinecone/index/list.js';
+import { createIndex } from './pinecone/index/create.js';
+import { query } from './pinecone/query.js';
+import { upsert } from './pinecone/vectors/upsert.js';
+import { delete_ } from './pinecone/vectors/delete.js';
+import { PINECONE_URL, PINECONE_API_KEY } from '../env.js';
 import {
-  PINECONE_ENVIRONMENT,
-  PINECONE_API_KEY,
   PINECONE_UPSERT_VECTOR_LIMIT,
   OPENAI_OUTPUT_DIMENSIONS,
   PINECONE_METRIC,
   PINECONE_POD_TYPE,
   EMBEDDING_MATCH_COUNT
 } from '../constants.js';
-import { get, set } from '../util/storage.js';
+import { set } from '../util/storage.js';
 import { forEachChunkedAsync } from '../util/array.js';
-import type { ScoredVector } from '@pinecone-database/pinecone';
-import type { MetaData, UpsertVectorOptions, VectorDatabase, QueryOptions } from '../types.js';
-
-const sortByScoreDesc = (a: ScoredVector, b: ScoredVector) => (a.score && b.score ? b.score - a.score : 0);
-
-const pinecone = new PineconeClient();
+import type { UpsertVectorOptions, VectorDatabase, QueryOptions } from '../types';
 
 export class Pinecone implements VectorDatabase {
-  indexName: undefined | string;
-  isInitialized = false;
+  token: string;
+  url: string;
 
-  async init() {
-    if (this.isInitialized) return;
-
+  constructor() {
+    if (!PINECONE_URL) throw new Error('Missing PINECONE_URL environment variable');
     if (!PINECONE_API_KEY) throw new Error('Missing PINECONE_API_KEY environment variable');
-    if (!PINECONE_ENVIRONMENT) throw new Error('Missing PINECONE_ENVIRONMENT environment variable');
-
-    await pinecone.init({
-      environment: PINECONE_ENVIRONMENT,
-      apiKey: PINECONE_API_KEY
-    });
-
-    this.indexName = get('pinecone', 'index');
-
-    this.isInitialized = true;
+    this.token = PINECONE_API_KEY;
+    this.url = PINECONE_URL;
   }
 
-  async createOrSetIndex(name: string) {
-    if (!name) throw new Error('Please provide name of index');
-
-    await this.init();
+  async createIndex(name?: string) {
+    if (!name) throw new Error('Please provide a name for the index');
 
     set('db', 'type', 'pinecone');
-    set('pinecone', 'index', name);
-    this.indexName = name;
 
-    const indices = await pinecone.listIndexes();
-    if (indices.indexOf(name) === -1) {
-      const createRequest = {
+    const indices = await listIndexes({ url: this.url, token: this.token });
+
+    if (!indices.includes(name)) {
+      const body = {
         name,
         dimension: OPENAI_OUTPUT_DIMENSIONS,
         metric: PINECONE_METRIC,
         podType: PINECONE_POD_TYPE
       };
 
-      await pinecone.createIndex({ createRequest });
+      await createIndex({ url: this.url, token: this.token, body });
 
       return [
         `Created new index: ${name} (${OPENAI_OUTPUT_DIMENSIONS}/${PINECONE_METRIC}/${PINECONE_POD_TYPE})`,
@@ -64,50 +50,23 @@ export class Pinecone implements VectorDatabase {
     }
   }
 
-  async getIndex() {
-    await this.init();
-    if (!this.indexName) throw new Error('No index selected. Use: 7d pinecone-set-index --index [name]');
-    return pinecone.Index(this.indexName);
-  }
-
-  async getIndexName() {
-    await this.init();
-    if (!this.indexName) throw new Error('No index selected. Use: 7d pinecone-set-index --index [name]');
-    return this.indexName;
-  }
-
   async upsertVectors({ namespace, vectors }: UpsertVectorOptions) {
-    const client = await this.getIndex();
     let v = 0;
     await forEachChunkedAsync(vectors, PINECONE_UPSERT_VECTOR_LIMIT, async vectors => {
-      const upsertRequest = { vectors, namespace };
-      const response = await client.upsert({ upsertRequest });
+      const body = { vectors, namespace };
+      const response = await upsert({ url: this.url, token: this.token, body });
       if (response.upsertedCount !== vectors.length) console.warn('Pinecone response did not match request:', response);
       v += vectors.length;
     });
     return v;
   }
 
-  async query({ embedding, namespace }: QueryOptions): Promise<MetaData[]> {
-    const client = await this.getIndex();
-    const results = await client.query({
-      queryRequest: {
-        vector: embedding,
-        namespace,
-        topK: EMBEDDING_MATCH_COUNT,
-        includeMetadata: true
-      }
-    });
-    return (
-      results.matches
-        ?.sort(sortByScoreDesc)
-        .map(match => match.metadata)
-        .filter((m): m is MetaData => !!m) ?? []
-    );
+  async query({ embedding, namespace }: QueryOptions) {
+    return query({ url: this.url, token: this.token, vector: embedding, namespace });
   }
 
   async clearNamespace(namespace: string) {
-    const client = await this.getIndex();
-    await client.delete1({ deleteAll: true, namespace });
+    const body = { deleteAll: true, namespace };
+    await delete_({ url: this.url, token: this.token, body });
   }
 }

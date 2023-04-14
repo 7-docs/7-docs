@@ -1,14 +1,17 @@
 import { OPENAI_OUTPUT_DIMENSIONS } from '../constants.js';
 import { set } from '../util/storage.js';
+import { normalizeNamespace } from '../util/text.js';
 
-export const createTable = (name: string) => {
-  if (!name) throw new Error('No name provided with --namespace');
+export const createTable = (namespace: string) => {
+  if (!namespace) throw new Error('No name provided with --namespace');
+
+  const ns = normalizeNamespace(namespace);
 
   const vectorExtenion = `CREATE EXTENSION IF NOT EXISTS vector;`;
 
-  const query = `CREATE TABLE IF NOT EXISTS ${name} (id uuid PRIMARY KEY, metadata jsonb, embedding vector(${OPENAI_OUTPUT_DIMENSIONS}));`;
+  const query = `CREATE TABLE IF NOT EXISTS ${ns} (id uuid PRIMARY KEY, metadata jsonb, embedding vector(${OPENAI_OUTPUT_DIMENSIONS}));`;
 
-  const fnQuery = `CREATE OR REPLACE function match_${name} (
+  const fnQuery = `CREATE OR REPLACE function match_${ns} (
     query_embedding vector(${OPENAI_OUTPUT_DIMENSIONS}),
     similarity_threshold float,
     match_count int
@@ -18,10 +21,10 @@ export const createTable = (name: string) => {
   AS $$
   BEGIN
     return query
-    SELECT ${name}.id, ${name}.metadata, 1 - (${name}.embedding <=> query_embedding) AS similarity
-    FROM ${name}
-    WHERE 1 - (${name}.embedding <=> query_embedding) > similarity_threshold
-    ORDER BY ${name}.embedding <=> query_embedding
+    SELECT ${ns}.id, ${ns}.metadata, 1 - (${ns}.embedding <=> query_embedding) AS similarity
+    FROM ${ns}
+    WHERE 1 - (${ns}.embedding <=> query_embedding) > similarity_threshold
+    ORDER BY ${ns}.embedding <=> query_embedding
     LIMIT match_count;
   END; $$;`;
 

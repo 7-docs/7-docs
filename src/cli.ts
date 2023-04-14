@@ -4,7 +4,7 @@ import { parseConfig } from './cli-arguments.js';
 import { ingest } from './command/ingest.js';
 import { openaiListModels } from './command/openai-list-models.js';
 import { pineconeClearNamespace } from './command/pinecone-clear-namespace.js';
-import { pineconeSetIndex } from './command/pinecone-set-index.js';
+import { pineconeCreateIndex } from './command/pinecone-create-index.js';
 import { query } from './command/query.js';
 import { createTable } from './command/supabase-create-table.js';
 import { set } from './util/storage.js';
@@ -14,8 +14,8 @@ const main = async () => {
     const { command, source, db, repo, patterns, namespace, index, input, stream } = await parseConfig();
 
     switch (command) {
-      case 'pinecone-set-index': {
-        await pineconeSetIndex(index);
+      case 'pinecone-create-index': {
+        await pineconeCreateIndex(index);
         break;
       }
       case 'pinecone-clear-namespace': {

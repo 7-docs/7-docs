@@ -1,11 +1,3 @@
-import * as dotenv from 'dotenv';
-import { get } from './util/storage.js';
-
-dotenv.config();
-
-export const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? get('env', 'OPENAI_API_KEY');
-export const OPENAI_ORGANIZATION = process.env.OPENAI_ORGANIZATION; // Not required
-
 /**
  * The maximum number of input tokens for the embedding model v2 is 8191. There seems to be no tokenizer for JS
  * available. Some use "4 characters per token", others "4/3 tokens per word". This can vary per language. And there
@@ -38,14 +30,8 @@ export const CHUNK_SIZE =
 // will fit. Keep one or two extra so this program can try the next embedding if one doesn't fit.
 export const EMBEDDING_MATCH_COUNT = 5;
 
-export const PINECONE_ENVIRONMENT = process.env.PINECONE_ENVIRONMENT ?? get('env', 'PINECONE_ENVIRONMENT');
-export const PINECONE_API_KEY = process.env.PINECONE_API_KEY ?? get('env', 'PINECONE_API_KEY');
 export const PINECONE_METRIC = 'cosine'; // OpenAI recommendation
 export const PINECONE_POD_TYPE = 'p2.x1'; // Options: s1 (high capacity), p1 (fast queries), p2 (low latency, high throughput)
 export const PINECONE_UPSERT_VECTOR_LIMIT = 100;
 
-export const SUPABASE_URL = process.env.SUPABASE_URL ?? get('env', 'SUPABASE_URL');
-export const SUPABASE_API_KEY = process.env.SUPABASE_API_KEY ?? get('env', 'SUPABASE_API_KEY');
 export const SUPABASE_SIMILARITY_THRESHOLD = 0.78;
-
-export const GITHUB_TOKEN = process.env.GITHUB_TOKEN ?? get('env', 'GITHUB_TOKEN');

@@ -25,7 +25,7 @@ query
 
 Additional helper commands:
   set
-  pinecone-set-index
+  pinecone-create-index
   pinecone-clear-namespace
   supabase-create-table
   openai-list-models
@@ -33,7 +33,7 @@ Additional helper commands:
 set
   [name] [value]          Store name with value (alternative to exporting environment variables)
 
-pinecone-set-index
+pinecone-create-index
   --index [name]          Create or set index
 
 pinecone-clear-namespace
@@ -49,7 +49,7 @@ Examples:
 
 > Using Pinecone
 
-$ 7d pinecone-set-index --index my-index
+$ 7d pinecone-create-index --index my-index
 $ 7d ingest --files '*.md' --namespace my-namespace
 $ 7d Can you give a summary?
 
@@ -61,7 +61,7 @@ $ 7d Can you give an introduction?
 
 > Using a GitHub repo
 
-$ 7d pinecone-set-index --index knip
+$ 7d pinecone-create-index --index knip
 $ 7d ingest --source github --repo reactjs/react.dev --files 'src/content/reference/react/*.md' --namespace react
 $ 7d What is Suspense?
 
@@ -75,7 +75,8 @@ export const parseConfig = async () => {
     allowPositionals: true,
     options: {
       help: { type: 'boolean', short: 'h' },
-      source: { type: 'string' },
+      debug: { type: 'boolean' },
+      source: { type: 'string', default: 'fs' },
       files: { type: 'string', multiple: true },
       repo: { type: 'string' },
       index: { type: 'string' },
@@ -91,23 +92,24 @@ export const parseConfig = async () => {
   }
 
   const [command, ...restPositionals] = parsedArgs.positionals;
+  const source = parsedArgs.values['source'];
   const patterns = parsedArgs.values['files'] ?? [];
   const input = restPositionals.join(' ').trim();
 
   const db = getOrSet('db', 'type', parsedArgs.values['db'], 'pinecone');
-  const source = getOrSet('source', 'type', parsedArgs.values['source'], 'fs');
   const namespace = getOrSet(db, 'namespace', parsedArgs.values['namespace'], '');
-  const index = getOrSet(db, 'index', parsedArgs.values['index']);
+  const index = parsedArgs.values['index'];
   const repo = getOrSet('github', 'repo', parsedArgs.values['repo']);
 
   return {
+    debug: parsedArgs.values.debug,
     command,
     source,
     db: ucFirst(db),
     repo,
     patterns,
     index,
-    namespace: namespace.replace(/[.\/-]/g, '_'),
+    namespace,
     input,
     stream: !parsedArgs.values['no-stream']
   };

@@ -1,12 +1,14 @@
 import { ChatCompletionRequestMessage } from 'openai';
-import { encode } from 'gpt-3-encoder';
-import ora from 'ora';
-import { createEmbedding, createChatCompletion } from '../client/openai.js';
+import ora from '../util/ora.js';
 import { Pinecone } from '../client/pinecone.js';
 import { Supabase } from '../client/supabase.js';
-import { OPENAI_MAX_COMPLETION_TOKENS, OPENAI_TOKENS_FOR_COMPLETION, OPENAI_EMBEDDING_MODEL } from '../constants.js';
+import { OPENAI_EMBEDDING_MODEL } from '../constants.js';
 import { uniqueByProperty } from '../util/array.js';
 import { addTokens, getInitUsage } from '../util/usage.js';
+import { getPrompt } from '../util/prompt.js';
+import { OpenAI } from '../client/openai/v1/client.js';
+import { OPENAI_API_KEY } from '../env.js';
+import { writeToStdOut } from '../util/stream.js';
 
 const targets = {
   Pinecone,
@@ -20,14 +22,6 @@ type Options = {
   stream: boolean;
 };
 
-const intro = `Answer the question as truthfully as possible using the provided context, and if the answer is not contained within the text below, say "Sorry, I don't have that information.".`;
-
-const getPrompt = (context: string, query: string) => {
-  return `${intro}\n\nContext:${context}\n\nQuestion: ${query}\n\nAnswer:`;
-};
-
-const availableTokens = OPENAI_MAX_COMPLETION_TOKENS - OPENAI_TOKENS_FOR_COMPLETION - encode(getPrompt('', '')).length;
-
 export const query = async ({ db, namespace, query, stream }: Options) => {
   if (!db || !(db in targets)) throw new Error(`Invalid --db: ${db}`);
   if (query.length < 3) throw new Error('Query must exceed 2 characters');
@@ -39,7 +33,8 @@ export const query = async ({ db, namespace, query, stream }: Options) => {
   const spinner = ora(`Creating query embedding`).start();
 
   try {
-    const response = await createEmbedding({ input: query, model: OPENAI_EMBEDDING_MODEL });
+    const client = new OpenAI(OPENAI_API_KEY);
+    const response = await client.createEmbeddings({ input: query, model: OPENAI_EMBEDDING_MODEL });
 
     counters.usage = addTokens(counters.usage, [response.usage]);
 
@@ -53,19 +48,10 @@ export const query = async ({ db, namespace, query, stream }: Options) => {
       throw new Error(`No results returned from ${db} query`);
     } else {
       const links = uniqueByProperty(metadata, 'url');
-      const text = metadata.map(metadata => metadata.content);
-      const [, promptText] = text.reduce(
-        ([remainingTokens, context], text) => {
-          const tokens = encode(text).length;
-          if (tokens > remainingTokens) return [remainingTokens, context];
-          return [remainingTokens - tokens, context + '\n' + text];
-        },
-        [availableTokens, ''] as [number, string]
-      );
+      const content = metadata.map(metadata => metadata.content);
+      const prompt = getPrompt(content, query);
 
-      if (text && text.length > 0) {
-        const prompt = getPrompt(promptText, query);
-
+      if (prompt) {
         const messages: ChatCompletionRequestMessage[] = [];
 
         messages.push({
@@ -75,15 +61,32 @@ export const query = async ({ db, namespace, query, stream }: Options) => {
 
         spinner.text = `Requesting OpenAI chat completion`;
 
-        if (stream) spinner.succeed('Streaming response:');
+        const body = { model: 'gpt-3.5-turbo', messages, stream };
+        const response = await client.chatCompletions(body);
 
-        const { text, usage } = await createChatCompletion({ messages, stream });
+        if (stream) {
+          spinner.succeed('Streaming response:');
 
-        if (!stream) spinner.succeed();
+          if (response.body) {
+            const reader = response.body.pipeThrough(new TextDecoderStream()).getReader();
+            let done = false;
+            while (!done) {
+              const { value, done: doneReading } = await reader.read();
+              done = doneReading;
+              writeToStdOut(value);
+            }
+          }
+        } else {
+          const data = await response.json();
+          const text = data.choices[0].message?.content?.trim();
+          const usage = data.usage;
 
-        if (usage) counters.usage = addTokens(counters.usage, [usage]);
+          spinner.succeed();
 
-        if (text) console.log(text);
+          console.log(`\n${text}`);
+
+          if (usage) counters.usage = addTokens(counters.usage, [usage]);
+        }
 
         if (links.length > 0) {
           console.log('\nThe locations used to answer your question may contain more information:\n');

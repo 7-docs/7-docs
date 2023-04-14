@@ -1,6 +1,8 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { SUPABASE_URL, SUPABASE_API_KEY, EMBEDDING_MATCH_COUNT, SUPABASE_SIMILARITY_THRESHOLD } from '../constants.js';
-import { VectorDatabase, UpsertVectorOptions, QueryOptions, MetaData } from '../types.js';
+import { SUPABASE_URL, SUPABASE_API_KEY } from '../env.js';
+import { EMBEDDING_MATCH_COUNT, SUPABASE_SIMILARITY_THRESHOLD } from '../constants.js';
+import { VectorDatabase, UpsertVectorOptions, QueryOptions, MetaData } from '../types';
+import { normalizeNamespace } from '../util/text.js';
 
 type Result = { id: string; metadata: string; similarity: number };
 type Results = undefined | Result[];
@@ -15,14 +17,16 @@ export class Supabase implements VectorDatabase {
   }
 
   async upsertVectors({ namespace, vectors }: UpsertVectorOptions) {
+    const ns = normalizeNamespace(namespace);
     const rows = vectors.map(v => ({ id: v.id, embedding: v.values, metadata: JSON.stringify(v.metadata) }));
-    const { error } = await this.client.from(namespace).upsert(rows);
+    const { error } = await this.client.from(ns).upsert(rows);
     if (error instanceof Error) throw error;
     return vectors.length;
   }
 
   async query({ embedding, namespace }: QueryOptions): Promise<MetaData[]> {
-    const { error, data } = await this.client.rpc(`match_${namespace}`, {
+    const ns = normalizeNamespace(namespace);
+    const { error, data } = await this.client.rpc(`match_${ns}`, {
       query_embedding: embedding,
       similarity_threshold: SUPABASE_SIMILARITY_THRESHOLD,
       match_count: EMBEDDING_MATCH_COUNT

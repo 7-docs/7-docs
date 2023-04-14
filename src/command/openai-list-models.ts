@@ -1,7 +1,9 @@
-import { listModels } from '../client/openai.js';
+import { OpenAI } from '../client/openai/v1/client.js';
+import { OPENAI_API_KEY } from '../env.js';
 
 export const openaiListModels = async () => {
-  const models = await listModels();
+  const client = new OpenAI(OPENAI_API_KEY);
+  const models = await client.listModels();
   const names = models.map(model => model.id);
   console.log(names.sort().join('\n'));
 };
