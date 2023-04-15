@@ -2,31 +2,6 @@
   "name": "7-docs",
   "version": "0.0.7",
   "description": "Build a knowledge base and ask it questions through ChatGPT",
-  "exports": {
-    "./edge.js": "./dist/edge/index.js"
-  },
-  "bin": {
-    "7d": "./dist/cli.js"
-  },
-  "type": "module",
-  "homepage": "https://github.com/7-docs/7-docs",
-  "repository": "github:7-docs/7-docs",
-  "bugs": "https://github.com/7-docs/7-docs/issues",
-  "license": "ISC",
-  "author": {
-    "name": "Lars Kappert",
-    "email": "lars@webpro.nl"
-  },
-  "scripts": {
-    "format": "remark README.md -o",
-    "prebuild": "node -e \"require('fs').rmSync('dist', { force: true, recursive: true })\"",
-    "watch": "tsc --watch",
-    "build": "tsc",
-    "prepublishOnly": "npm run build"
-  },
-  "files": [
-    "dist"
-  ],
   "keywords": [
     "docs",
     "documentation",
@@ -40,14 +15,51 @@
     "pinecone",
     "supabase"
   ],
+  "homepage": "https://github.com/7-docs/7-docs",
+  "bugs": "https://github.com/7-docs/7-docs/issues",
+  "repository": "github:7-docs/7-docs",
+  "license": "ISC",
+  "author": {
+    "name": "Lars Kappert",
+    "email": "lars@webpro.nl"
+  },
+  "type": "module",
+  "bin": {
+    "7d": "./dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "prebuild": "node ./rm-dist.js",
+    "build": "tsc --build",
+    "format": "remark README.md -o",
+    "knip": "knip",
+    "lint": "eslint src",
+    "prepublishOnly": "npm run build",
+    "release": "release-it",
+    "watch": "tsc --build --watch"
+  },
+  "remarkConfig": {
+    "plugins": [
+      "preset-webpro"
+    ]
+  },
   "dependencies": {
+    "@7-docs/edge": "0.0.1",
+    "@7-docs/shared": "0.0.1",
     "@octokit/rest": "^19.0.7",
     "@supabase/supabase-js": "^2.15.0",
+    "cheerio": "^1.0.0-rc.12",
     "dotenv": "^16.0.3",
     "fast-glob": "^3.2.12",
     "micromatch": "^4.0.5",
-    "openai": "^3.2.1",
     "ora": "^6.3.0",
+    "path2d-polyfill": "^2.0.1",
+    "pdfjs-dist": "^3.5.141",
     "remark": "^14.0.2",
     "remark-frontmatter": "^4.0.1",
     "remark-gfm": "^3.0.1",
@@ -58,14 +70,17 @@
     "@pinecone-database/pinecone": "^0.0.12",
     "@types/micromatch": "^4.0.2",
     "@types/node": "^18.15.11",
+    "@typescript-eslint/eslint-plugin": "^5.59.0",
+    "@typescript-eslint/parser": "^5.59.0",
+    "eslint": "^8.38.0",
+    "eslint-import-resolver-exports": "^1.0.0-beta.5",
+    "eslint-import-resolver-typescript": "^3.5.5",
+    "eslint-plugin-import": "^2.27.5",
+    "knip": "^2.9.0",
+    "openai": "^3.2.1",
+    "release-it": "^15.10.1",
     "remark-cli": "^11.0.0",
     "remark-preset-webpro": "^0.0.2",
-    "tsx": "^3.12.6",
     "typescript": "^5.0.3"
-  },
-  "remarkConfig": {
-    "plugins": [
-      "preset-webpro"
-    ]
   }
 }

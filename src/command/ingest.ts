@@ -1,20 +1,24 @@
-import ora from '../util/ora.js';
-import { isMarkdown, extractSections } from '../util/markdown.js';
-import { extractTextSections } from '../util/text.js';
-import { generateId } from '../util/array.js';
-import { CHUNK_SIZE, OPENAI_EMBEDDING_MODEL } from '../constants.js';
+import { OpenAI } from '@7-docs/edge/openai';
+import { CHUNK_SIZE, OPENAI_EMBEDDING_MODEL } from '@7-docs/shared/constants.js';
 import * as fs from '../client/fs.js';
 import * as github from '../client/github.js';
+import * as http from '../client/http.js';
 import { Pinecone } from '../client/pinecone.js';
 import { Supabase } from '../client/supabase.js';
-import { getInitUsage, addTokens } from '../util/usage.js';
-import { OpenAI } from '../client/openai/v1/client.js';
 import { OPENAI_API_KEY } from '../env.js';
-import type { MetaData } from '../types';
+import { generateId } from '../util/crypto.js';
+import { extractHtmlSections, isHTML } from '../util/html.js';
+import { isMarkdown, extractSections } from '../util/markdown.js';
+import ora from '../util/ora.js';
+import { extractPdfSections, isPDF } from '../util/pdf.js';
+import { extractTextSections } from '../util/text.js';
+import { getInitUsage, addTokens } from '../util/usage.js';
+import type { MetaData } from '@7-docs/shared';
 
 const sources = {
   github,
-  fs
+  fs,
+  http
 };
 
 const targets = {
@@ -26,11 +30,12 @@ type Options = {
   source?: string;
   db?: string;
   repo: string;
-  patterns: string | string[];
+  patterns: string[];
   namespace: string;
+  isDryRun: boolean;
 };
 
-export const ingest = async ({ source, repo, patterns, db, namespace }: Options) => {
+export const ingest = async ({ source, repo, patterns, db, namespace, isDryRun }: Options) => {
   if (!source || !(source in sources)) throw new Error(`Invalid --source: ${source}`);
   if (!db || !(db in targets)) throw new Error(`Invalid --db: ${db}`);
   if (source === 'github' && !repo) throw new Error('No --repo provided');
@@ -58,16 +63,25 @@ export const ingest = async ({ source, repo, patterns, db, namespace }: Options)
       for (const file of files) {
         const { content, url, filePath } = file;
 
+        if (!content) continue;
+
         spinner.text = `Creating and upserting embedding for: ${filePath}`;
 
-        const { title, sections } = isMarkdown(filePath)
+        const { title, sections } = isHTML(filePath)
+          ? extractHtmlSections(content, CHUNK_SIZE)
+          : isMarkdown(filePath)
           ? extractSections(content, CHUNK_SIZE)
+          : isPDF(filePath)
+          ? {
+              title: filePath,
+              sections: (await extractPdfSections(content, CHUNK_SIZE)).map(s => ({ content: s, header: '' }))
+            }
           : {
               title: filePath,
               sections: extractTextSections(content, CHUNK_SIZE).map(s => ({ content: s, header: '' }))
             };
 
-        console.log({ title, sections });
+        if (isDryRun) continue;
 
         const requests = sections.map(section =>
           client.createEmbeddings({ input: section.content, model: OPENAI_EMBEDDING_MODEL })

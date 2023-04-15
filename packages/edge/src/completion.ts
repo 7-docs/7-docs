@@ -1,11 +1,11 @@
+import { uniqueByProperty } from '@7-docs/shared/array.js';
+import { getPrompt } from '@7-docs/shared/prompt.js';
+import { OpenAI } from './openai/v1/client.js';
+import { isChatCompletionModel } from './openai/v1/util.js';
+import { TransformWithEvent } from './util/stream.js';
 import { getParams, streamResponse } from './util.js';
-import { getPrompt } from '../util/prompt.js';
-import { OpenAI } from '../client/openai/v1/client.js';
-import { isChatCompletionModel } from '../client/openai/v1/util.js';
+import type { MetaData } from '@7-docs/shared';
 import type { ChatCompletionRequestMessage } from 'openai';
-import type { MetaData } from '../types.js';
-import { uniqueByProperty } from '../util/array.js';
-import { TransformWithEvent } from '../util/stream.js';
 
 interface Options {
   OPENAI_API_KEY: string;

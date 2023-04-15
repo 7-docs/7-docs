@@ -1,7 +1,7 @@
+import { EMBEDDING_MATCH_COUNT } from '@7-docs/shared/constants.js';
 import { ensureProtocol, sortByScoreDesc } from './util.js';
+import type { MetaData } from '@7-docs/shared';
 import type { QueryResponse } from '@pinecone-database/pinecone/dist/pinecone-generated-ts-fetch';
-import type { MetaData } from '../../types';
-import { EMBEDDING_MATCH_COUNT } from '../../constants.js';
 
 const defaults = {
   topK: EMBEDDING_MATCH_COUNT,

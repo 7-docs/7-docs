@@ -1,3 +1,5 @@
+import type { MetaData } from '@7-docs/shared';
+
 interface Vector {
   id: string;
   values: Array<number>;
@@ -7,22 +9,10 @@ interface Vector {
 interface FileData {
   filePath: string;
   url: string;
-  content: string;
+  content: Buffer;
 }
 
-// Don't allow `null` values (not supported in Pinecone)
-export interface MetaData extends FileData {
-  title: string;
-  header?: string;
-}
-
-export interface Usage {
-  prompt_tokens: number;
-  completion_tokens?: number;
-  total_tokens: number;
-}
-
-export type FetchFiles = (patterns: string | string[], id: string) => Promise<Array<FileData>>;
+export type FetchFiles = (patterns: string[], id: string) => Promise<Array<FileData>>;
 
 export type UpsertVectorOptions = { namespace: string; vectors: Vector[] };
 export type QueryOptions = { embedding: Array<number>; namespace: string };

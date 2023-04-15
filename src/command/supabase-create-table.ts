@@ -1,6 +1,6 @@
-import { OPENAI_OUTPUT_DIMENSIONS } from '../constants.js';
+import { OPENAI_OUTPUT_DIMENSIONS } from '@7-docs/shared/constants.js';
+import { normalizeNamespace } from '@7-docs/shared/string.js';
 import { set } from '../util/storage.js';
-import { normalizeNamespace } from '../util/string.js';
 
 export const createTable = (namespace: string) => {
   if (!namespace) throw new Error('No name provided with --namespace');

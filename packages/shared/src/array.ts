@@ -1,3 +1,6 @@
+export const compact = <T>(collection: (T | undefined)[]) =>
+  Array.from(new Set(collection)).filter((value): value is T => Boolean(value));
+
 export const uniqueByProperty = <T, K extends keyof T>(arr: T[], property: K): T[] => {
   const uniqueValues = new Set<T[K]>();
   return arr.filter(obj => {

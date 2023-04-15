@@ -1,0 +1,39 @@
+{
+  "name": "@7-docs/edge",
+  "version": "0.0.1",
+  "description": "Package to use 7-docs from edge functions",
+  "homepage": "https://github.com/7-docs/7-docs",
+  "bugs": "https://github.com/7-docs/7-docs/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/7-docs/7-docs.git",
+    "directory": "packages/edge"
+  },
+  "license": "ISC",
+  "author": {
+    "name": "Lars Kappert",
+    "email": "lars@webpro.nl"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./openai": "./dist/openai/index.js",
+    "./pinecone": "./dist/pinecone/index.js",
+    "./supabase": "./dist/supabase/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "@7-docs/shared": "0.0.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

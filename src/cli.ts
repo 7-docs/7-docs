@@ -11,7 +11,7 @@ import { set } from './util/storage.js';
 
 const main = async () => {
   try {
-    const { command, source, db, repo, patterns, namespace, index, input, stream } = await parseConfig();
+    const { command, source, db, repo, patterns, namespace, index, input, stream, isDryRun } = await parseConfig();
 
     switch (command) {
       case 'pinecone-create-index': {
@@ -36,7 +36,7 @@ const main = async () => {
         break;
       }
       case 'ingest': {
-        await ingest({ source, db, repo, patterns, namespace });
+        await ingest({ source, db, repo, patterns, namespace, isDryRun });
         break;
       }
       case 'query': {
@@ -56,4 +56,4 @@ const main = async () => {
   }
 };
 
-main();
+await main();

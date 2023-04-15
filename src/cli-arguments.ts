@@ -1,8 +1,8 @@
 import { parseArgs } from 'node:util';
+import { ucFirst } from '@7-docs/shared/string.js';
 import { getOrSet } from './util/storage.js';
-import { ucFirst } from './util/string.js';
 
-export const helpText = `Tool to query content based on local files or GitHub repositories.
+const helpText = `Tool to query content based on local files or GitHub repositories.
 
 Usage: 7h [command] [options]
 
@@ -82,7 +82,8 @@ export const parseConfig = async () => {
       index: { type: 'string' },
       namespace: { type: 'string' },
       db: { type: 'string' },
-      'no-stream': { type: 'boolean', default: false }
+      'no-stream': { type: 'boolean', default: false },
+      'dry-run': { type: 'boolean', default: false }
     }
   });
 
@@ -111,6 +112,7 @@ export const parseConfig = async () => {
     index,
     namespace,
     input,
-    stream: !parsedArgs.values['no-stream']
+    stream: !parsedArgs.values['no-stream'],
+    isDryRun: !!parsedArgs.values['dry-run']
   };
 };

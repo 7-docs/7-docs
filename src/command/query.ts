@@ -1,14 +1,14 @@
-import { ChatCompletionRequestMessage } from 'openai';
-import ora from '../util/ora.js';
+import { OpenAI } from '@7-docs/edge/openai';
+import { OPENAI_EMBEDDING_MODEL } from '@7-docs/shared/constants.js';
+import { getPrompt } from '@7-docs/shared/prompt.js';
 import { Pinecone } from '../client/pinecone.js';
 import { Supabase } from '../client/supabase.js';
-import { OPENAI_EMBEDDING_MODEL } from '../constants.js';
-import { uniqueByProperty } from '../util/array.js';
-import { addTokens, getInitUsage } from '../util/usage.js';
-import { getPrompt } from '../util/prompt.js';
-import { OpenAI } from '../client/openai/v1/client.js';
 import { OPENAI_API_KEY } from '../env.js';
+import { uniqueByProperty } from '../util/array.js';
+import ora from '../util/ora.js';
 import { writeToStdOut } from '../util/stream.js';
+import { addTokens, getInitUsage } from '../util/usage.js';
+import type { ChatCompletionRequestMessage } from 'openai';
 
 const targets = {
   Pinecone,

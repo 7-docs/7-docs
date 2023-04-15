@@ -1,4 +1,4 @@
-type Params = Record<string, string | null>;
+import type { Params, EventData, ChatCompletionEventData, CompletionEventData } from '@7-docs/shared';
 
 export const getParams = async (req: Request): Promise<Params> => {
   const method = req.method;
@@ -17,3 +17,10 @@ export const streamResponse = (body: BodyInit | null) => {
   const headers = { 'Content-Type': 'text/event-stream' };
   return new Response(body, { headers });
 };
+
+const isChatCompletion = (data: EventData): data is ChatCompletionEventData => data.object === 'chat.completion.chunk';
+
+const isCompletion = (data: EventData): data is CompletionEventData => data.object === 'text_completion';
+
+export const getDelta = (data: EventData) =>
+  isChatCompletion(data) ? data.choices[0].delta.content : isCompletion(data) ? data.choices[0].text : '';

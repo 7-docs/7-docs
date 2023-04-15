@@ -1,0 +1,10 @@
+{
+  "workspaces": {
+    "packages/edge": {
+      "entry": ["src/index.ts!", "src/{openai,pinecone,supabase}/index.ts!"]
+    },
+    "packages/shared": {
+      "entry": ["src/*.ts!"]
+    }
+  }
+}

@@ -1,14 +1,14 @@
-import { chatCompletions } from './chatCompletions.js';
-import { completions } from './completions.js';
-import { createEmbeddings } from './embeddings.js';
 import {
   OPENAI_TOKENS_FOR_COMPLETION,
   OPENAI_COMPLETION_TEMPERATURE,
   OPENAI_COMPLETION_TOP_P,
   OPENAI_COMPLETION_N
-} from '../../../constants.js';
-import type { CreateChatCompletionRequest, CreateCompletionRequest } from 'openai';
+} from '@7-docs/shared/constants.js';
+import { chatCompletions } from './chatCompletions.js';
+import { completions } from './completions.js';
+import { createEmbeddings } from './embeddings.js';
 import { listModels } from './listModels.js';
+import type { CreateChatCompletionRequest, CreateCompletionRequest } from 'openai';
 
 const defaults = {
   max_tokens: OPENAI_TOKENS_FOR_COMPLETION,

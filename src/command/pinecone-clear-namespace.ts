@@ -1,5 +1,5 @@
-import ora from '../util/ora.js';
 import { Pinecone } from '../client/pinecone.js';
+import ora from '../util/ora.js';
 
 export const pineconeClearNamespace = async (namespace: string) => {
   const pinecone = new Pinecone();

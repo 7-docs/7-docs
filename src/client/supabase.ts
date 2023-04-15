@@ -1,8 +1,9 @@
+import { EMBEDDING_MATCH_COUNT, SUPABASE_SIMILARITY_THRESHOLD } from '@7-docs/shared/constants.js';
+import { normalizeNamespace } from '@7-docs/shared/string.js';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { SUPABASE_URL, SUPABASE_API_KEY } from '../env.js';
-import { EMBEDDING_MATCH_COUNT, SUPABASE_SIMILARITY_THRESHOLD } from '../constants.js';
-import { VectorDatabase, UpsertVectorOptions, QueryOptions, MetaData } from '../types';
-import { normalizeNamespace } from '../util/string.js';
+import type { VectorDatabase, UpsertVectorOptions, QueryOptions } from '../types.js';
+import type { MetaData } from '@7-docs/shared';
 
 type Result = { id: string; metadata: string; similarity: number };
 type Results = undefined | Result[];

@@ -1,7 +1,7 @@
 import { Octokit } from '@octokit/rest';
 import micromatch from 'micromatch';
 import { GITHUB_TOKEN } from '../env.js';
-import { FetchFiles } from '../types.js';
+import type { FetchFiles } from '../types.js';
 import type { RestEndpointMethodTypes } from '@octokit/rest';
 
 type Tree = RestEndpointMethodTypes['git']['getTree']['response']['data']['tree'];
@@ -16,14 +16,14 @@ const getFileData = async (repoId: string, filePath: string) => {
 
   if (Array.isArray(fileContent) || fileContent.type !== 'file') {
     console.warn(`Unexpected response from octokit.rest.repos.getContent for file ${filePath}`);
-    return { filePath, url: '', content: '' };
+    return { filePath, url: '', content: Buffer.from('') };
   }
 
   const { content, html_url } = fileContent;
-  return { filePath, url: html_url ?? '', content: Buffer.from(content, 'base64').toString() };
+  return { filePath, url: html_url ?? '', content: Buffer.from(content, 'base64') };
 };
 
-const getTree = async (repoId: string, tree_sha: string = 'HEAD'): Promise<Tree> => {
+const getTree = async (repoId: string, tree_sha = 'HEAD'): Promise<Tree> => {
   const [owner, repo] = repoId.split('/');
   const response = await octokit.rest.git.getTree({ owner, repo, tree_sha, recursive: 'true' });
   return response.data.tree;
@@ -32,5 +32,6 @@ const getTree = async (repoId: string, tree_sha: string = 'HEAD'): Promise<Tree>
 export const fetchFiles: FetchFiles = async (patterns, repoId) => {
   const tree = await getTree(repoId);
   const files = tree.filter(file => file.path && file.type === 'blob' && micromatch.isMatch(file.path, patterns));
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   return Promise.all(files.map(file => getFileData(repoId, file.path!)));
 };

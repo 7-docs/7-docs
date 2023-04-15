@@ -1,7 +1,7 @@
-import { createClient } from '@supabase/supabase-js';
-import { EMBEDDING_MATCH_COUNT, SUPABASE_SIMILARITY_THRESHOLD } from '../../constants.js';
-import { normalizeNamespace } from '../../util/string.js';
-import type { MetaData } from '../../types';
+import { EMBEDDING_MATCH_COUNT, SUPABASE_SIMILARITY_THRESHOLD } from '@7-docs/shared/constants.js';
+import { normalizeNamespace } from '@7-docs/shared/string.js';
+import type { MetaData } from '@7-docs/shared';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
 const defaults = {
   similarity_threshold: SUPABASE_SIMILARITY_THRESHOLD,
@@ -11,16 +11,17 @@ const defaults = {
 type Result = { id: string; metadata: string; similarity: number };
 type Results = undefined | Result[];
 
-type Query = (options: { token: string; url: string; namespace: string; vector: number[] }) => Promise<MetaData[]>;
+type Query = (options: { client: SupabaseClient; namespace: string; vector: number[] }) => Promise<MetaData[]>;
 
-export const query: Query = async ({ token, url, namespace, vector }) => {
+export const query: Query = async ({ client, namespace, vector }) => {
   const ns = normalizeNamespace(namespace);
-  const client = createClient(url, token);
 
   const { error, data } = await client.rpc(`match_${ns}`, {
     ...defaults,
     query_embedding: vector
   });
+
   if (error instanceof Error) throw error;
+
   return (data as Results)?.map(d => JSON.parse(d.metadata)) ?? [];
 };

@@ -1,4 +1,4 @@
-import { Usage } from '../types';
+import type { Usage } from '@7-docs/shared';
 
 export const getInitUsage = (): Usage => ({ prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 });
 

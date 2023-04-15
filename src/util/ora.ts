@@ -26,7 +26,7 @@ const logger = (message: Options) => {
 };
 
 const ora = function (options?: string | Options): Ora {
-  // @ts-ignore
+  // @ts-ignore -- Might fix later
   return debug ? logger(options) : _ora(options);
 };
 

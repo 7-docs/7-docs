@@ -1,19 +1,14 @@
-import { listIndexes } from './pinecone/index/list.js';
-import { createIndex } from './pinecone/index/create.js';
-import { query } from './pinecone/query.js';
-import { upsert } from './pinecone/vectors/upsert.js';
-import { delete_ } from './pinecone/vectors/delete.js';
-import { PINECONE_URL, PINECONE_API_KEY } from '../env.js';
+import { listIndexes, createIndex, upsert, deleteVector, query } from '@7-docs/edge/pinecone';
 import {
   PINECONE_UPSERT_VECTOR_LIMIT,
   OPENAI_OUTPUT_DIMENSIONS,
   PINECONE_METRIC,
-  PINECONE_POD_TYPE,
-  EMBEDDING_MATCH_COUNT
-} from '../constants.js';
-import { set } from '../util/storage.js';
+  PINECONE_POD_TYPE
+} from '@7-docs/shared/constants.js';
+import { PINECONE_URL, PINECONE_API_KEY } from '../env.js';
 import { forEachChunkedAsync } from '../util/array.js';
-import type { UpsertVectorOptions, VectorDatabase, QueryOptions } from '../types';
+import { set } from '../util/storage.js';
+import type { UpsertVectorOptions, VectorDatabase, QueryOptions } from '../types.js';
 
 export class Pinecone implements VectorDatabase {
   token: string;
@@ -67,6 +62,6 @@ export class Pinecone implements VectorDatabase {
 
   async clearNamespace(namespace: string) {
     const body = { deleteAll: true, namespace };
-    await delete_({ url: this.url, token: this.token, body });
+    await deleteVector({ url: this.url, token: this.token, body });
   }
 }
