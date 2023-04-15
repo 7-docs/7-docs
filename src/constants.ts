@@ -8,13 +8,20 @@ export const OPENAI_MAX_INPUT_TOKENS = 8191;
 export const OPENAI_OUTPUT_DIMENSIONS = 1536;
 
 /**
- * The other thing to consider is that the completion model is also capped, at 4096 tokens. Larger embeddings eventually
- * means less of them fit in the context for the completion (EMBEDDING_MATCH_COUNT). We also need to leave room for the
- * question and for the completion. Using the largest possible chunks of texts for embeddings is not necessarily the
- * best strategy. So tweaking is necessary for best results based on input and expected output.
+ * The other thing to consider is that the completion model is also capped (e.g. at 4096 tokens). Larger embeddings
+ * eventually means less of them fit in the context for the completion (EMBEDDING_MATCH_COUNT). We also need to leave
+ * room for the question and for the completion. Using the largest possible chunks of texts for embeddings is not
+ * necessarily the best strategy. So tweaking is necessary for best results based on input and expected output.
  */
-export const OPENAI_COMPLETION_MODEL = 'gpt-3.5-turbo'; // text-davinci-003, gpt-4
-export const OPENAI_MAX_COMPLETION_TOKENS = 4096;
+
+const MAX_COMPLETION_TOKENS_MAP = {
+  'gpt-3.5-turbo': 4096,
+  'gpt-4': 8192,
+  'gpt-4-32k': 32_768
+};
+
+export const OPENAI_COMPLETION_MODEL = 'gpt-3.5-turbo';
+export const OPENAI_MAX_COMPLETION_TOKENS = MAX_COMPLETION_TOKENS_MAP[OPENAI_COMPLETION_MODEL];
 export const OPENAI_TOKENS_FOR_COMPLETION = 1024; // Tokens reserved for the answer/completion
 export const OPENAI_COMPLETION_TEMPERATURE = 0.2;
 export const OPENAI_COMPLETION_TOP_P = 1;
