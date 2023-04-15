@@ -13,6 +13,7 @@ interface FileData {
 // Don't allow `null` values (not supported in Pinecone)
 export interface MetaData extends FileData {
   title: string;
+  header?: string;
 }
 
 export interface Usage {

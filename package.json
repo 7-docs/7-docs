@@ -49,8 +49,10 @@
     "openai": "^3.2.1",
     "ora": "^6.3.0",
     "remark": "^14.0.2",
+    "remark-frontmatter": "^4.0.1",
     "remark-gfm": "^3.0.1",
-    "strip-markdown": "^5.0.0"
+    "strip-markdown": "^5.0.0",
+    "yaml": "^2.2.1"
   },
   "devDependencies": {
     "@pinecone-database/pinecone": "^0.0.12",

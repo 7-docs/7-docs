@@ -1,5 +1,6 @@
 import ora from '../util/ora.js';
-import { stripMarkdown, chunkSentences, getTitle } from '../util/text.js';
+import { isMarkdown, extractSections } from '../util/markdown.js';
+import { extractTextSections } from '../util/text.js';
 import { generateId } from '../util/array.js';
 import { CHUNK_SIZE, OPENAI_EMBEDDING_MODEL } from '../constants.js';
 import * as fs from '../client/fs.js';
@@ -59,18 +60,25 @@ export const ingest = async ({ source, repo, patterns, db, namespace }: Options)
 
         spinner.text = `Creating and upserting embedding for: ${filePath}`;
 
-        const text = await stripMarkdown(content);
-        const title = getTitle(content) || filePath;
-        const chunks = chunkSentences(text, CHUNK_SIZE);
+        const { title, sections } = isMarkdown(filePath)
+          ? extractSections(content, CHUNK_SIZE)
+          : {
+              title: filePath,
+              sections: extractTextSections(content, CHUNK_SIZE).map(s => ({ content: s, header: '' }))
+            };
 
-        const requests = chunks.map(input => client.createEmbeddings({ input, model: OPENAI_EMBEDDING_MODEL }));
+        console.log({ title, sections });
+
+        const requests = sections.map(section =>
+          client.createEmbeddings({ input: section.content, model: OPENAI_EMBEDDING_MODEL })
+        );
         const responses = await Promise.all(requests);
         const embeddings = responses.flatMap(response => response.embeddings);
 
         const vectors = embeddings.map((values, index) => {
-          const text = chunks[index];
-          const id = generateId(filePath + '\n' + text.trim());
-          const metadata: MetaData = { title, url, filePath, content: text };
+          const section = sections[index];
+          const id = generateId(filePath + '\n' + section.content.trim());
+          const metadata: MetaData = { title, url, filePath, content: section.content, header: section.header };
           return { id, values, metadata };
         });
 
