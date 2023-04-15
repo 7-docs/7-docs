@@ -7,22 +7,29 @@ with ChatGPT. Multiple sources can be combined into one namespace.
 
 ## Impression
 
-![Demo of ingest and query](./assets/ingest-and-query.gif)
+### CLI
+
+![Demo of ingest and query][1]
+
+### Web GUI
+
+A basic demonstration is currently running at [7-docs-deno-supabase.deno.dev][2] (content ingested from the release-it
+package and related plugin repositories). The source code is at [github.com/7-docs/deno-supabase][3].
 
 ## Content
 
-- [Status](#status)
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Pinecone](#pinecone)
-- [Supabase](#supabase)
-- [GitHub](#github)
+- [Status][4]
+- [Prerequisites][5]
+- [Installation][6]
+- [Pinecone][7]
+- [Supabase][8]
+- [GitHub][9]
 
 ## Status
 
 This is still in an early alpha phase. There is a command-line interface, it supports text and Markdown files as input,
-uses OpenAI `text-embedding-ada-002` for embeddings, [Pinecone][1] and [Supabase][2] for vector storage, and the OpenAI
-`gpt-3.5-turbo` completion model.
+uses OpenAI `text-embedding-ada-002` for embeddings, [Pinecone][10] and [Supabase][11] for vector storage, and the
+OpenAI `gpt-3.5-turbo` completion model.
 
 Ideas for extension:
 
@@ -42,8 +49,8 @@ Ideas for extension:
 
 You can install 7-docs in two ways:
 
-- [Global][3] to manage knowledge base(s) from the command line.
-- [Local][4] to manage the knowledge base(s) of a repository.
+- [Global][12] to manage knowledge base(s) from the command line.
+- [Local][13] to manage the knowledge base(s) of a repository.
 
 ### Global
 
@@ -53,7 +60,7 @@ Use `7d` from anywhere to manage your personal knowledge bases:
 npm install --global 7-docs
 ```
 
-Get an [OpenAI API key][5] and make it available as en environment variable:
+Get an [OpenAI API key][14] and make it available as en environment variable:
 
 ```shell
 export OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -83,7 +90,7 @@ OPENAI_API_KEY="sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 For local installations, use `npx 7d` (over just `7d`).
 
-Now let's choose either [Pinecone][6] or [Supabase][7]!
+Now let's choose either [Pinecone][7] or [Supabase][8]!
 
 ## Pinecone
 
@@ -100,7 +107,7 @@ Create or select an index:
 7d pinecone-create-index --index my-index
 ```
 
-![Demo of Pinecone index creation](assets/pinecone-create-index.gif)
+![Demo of Pinecone index creation][15]
 
 Let's ingest some text or Markdown files, make sure to adjust the `--files` pattern to match yours:
 
@@ -123,7 +130,7 @@ export SUPABASE_URL="https://xxxxxxxxxxxxxxxxxxxx.supabase.co"
 export SUPABASE_API_KEY="ey..."
 ```
 
-Print the SQL query to enable [pgvector][8] and create a table (paste the output in the [Supabase web admin][9]):
+Print the SQL query to enable [pgvector][16] and create a table (paste the output in the [Supabase web admin][17]):
 
 ```shell
 7d supabase-create-table --namespace my-collection
@@ -153,7 +160,7 @@ You can start without it, but once you start fetching lots of files you'll need 
 
     export GITHUB_TOKEN="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
-![Demo of ingest and query](./assets/ingest-and-query-2.gif)
+![Demo of ingest and query][18]
 
 ## Other commands
 
@@ -185,27 +192,36 @@ Clear a single namespace from the current Pinecone index:
 
 ## Token Usage
 
-The recommended [text-embedding-ada-002][10] model is used to create embeddings. Ingestion uses some tokens when
-ingesting lots of files. Queries use only a few tokens (using the [gpt-3.5-turbo][11] model by default). See the console
+The recommended [text-embedding-ada-002][19] model is used to create embeddings. Ingestion uses some tokens when
+ingesting lots of files. Queries use only a few tokens (using the [gpt-3.5-turbo][20] model by default). See the console
 for details.
 
 ## Inspired by
 
-- [Paul Kinlan][12]
-- [OpenAI Cookbook][13]
-- [Polymath][14]
+- [Paul Kinlan][21]
+- [OpenAI Cookbook][22]
+- [Polymath][23]
 
-[1]: https://www.pinecone.io
-[2]: https://supabase.com
-[3]: #global
-[4]: #local
-[5]: https://platform.openai.com/account/api-keys
-[6]: #pinecone
-[7]: #supabase
-[8]: https://supabase.com/docs/guides/database/extensions/pgvector
-[9]: https://app.supabase.com/projects
-[10]: https://platform.openai.com/docs/guides/embeddings/what-are-embeddings
-[11]: https://platform.openai.com/docs/guides/chat
-[12]: https://github.com/PaulKinlan/paul.kinlan.me
-[13]: https://github.com/openai/openai-cookbook
-[14]: https://github.com/polymath-ai/polymath-ai
+[1]: ./assets/ingest-and-query.gif
+[2]: https://7-docs-deno-supabase.deno.dev
+[3]: https://github.com/7-docs/deno-supabase
+[4]: #status
+[5]: #prerequisites
+[6]: #installation
+[7]: #pinecone
+[8]: #supabase
+[9]: #github
+[10]: https://www.pinecone.io
+[11]: https://supabase.com
+[12]: #global
+[13]: #local
+[14]: https://platform.openai.com/account/api-keys
+[15]: assets/pinecone-create-index.gif
+[16]: https://supabase.com/docs/guides/database/extensions/pgvector
+[17]: https://app.supabase.com/projects
+[18]: ./assets/ingest-and-query-2.gif
+[19]: https://platform.openai.com/docs/guides/embeddings/what-are-embeddings
+[20]: https://platform.openai.com/docs/guides/chat
+[21]: https://github.com/PaulKinlan/paul.kinlan.me
+[22]: https://github.com/openai/openai-cookbook
+[23]: https://github.com/polymath-ai/polymath-ai
