@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { EMBEDDING_MATCH_COUNT, SUPABASE_SIMILARITY_THRESHOLD } from '../../constants.js';
-import { normalizeNamespace } from '../../util/text.js';
+import { normalizeNamespace } from '../../util/string.js';
 import type { MetaData } from '../../types';
 
 const defaults = {

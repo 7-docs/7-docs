@@ -2,7 +2,7 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { SUPABASE_URL, SUPABASE_API_KEY } from '../env.js';
 import { EMBEDDING_MATCH_COUNT, SUPABASE_SIMILARITY_THRESHOLD } from '../constants.js';
 import { VectorDatabase, UpsertVectorOptions, QueryOptions, MetaData } from '../types';
-import { normalizeNamespace } from '../util/text.js';
+import { normalizeNamespace } from '../util/string.js';
 
 type Result = { id: string; metadata: string; similarity: number };
 type Results = undefined | Result[];
