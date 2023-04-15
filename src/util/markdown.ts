@@ -78,7 +78,7 @@ export function extractSections(markdown: string, maxLength: number): ExtractedD
         content: ''
       };
     } else if (currentSection) {
-      currentSection.content += remarkInstance.stringify(node);
+      currentSection.content += remarkInstance.stringify({ type: 'root', children: [node] });
     }
   }
 
