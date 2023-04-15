@@ -53,7 +53,9 @@ export const getCompletionHandler = (options: Options) => {
     } else {
       const body = { model: completion_model, prompt };
       const completionResponse = await client.completions(body);
-      return streamResponse(completionResponse.body);
+      if (!completionResponse.body) return new Response();
+      const transformedStream = completionResponse.body.pipeThrough(streamWithEvent.getTransformStream());
+      return streamResponse(transformedStream);
     }
   };
 };
