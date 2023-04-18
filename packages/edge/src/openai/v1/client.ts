@@ -3,7 +3,7 @@ import {
   OPENAI_COMPLETION_TEMPERATURE,
   OPENAI_COMPLETION_TOP_P,
   OPENAI_COMPLETION_N
-} from '@7-docs/shared/constants.js';
+} from '@7-docs/shared';
 import { chatCompletions } from './chatCompletions.js';
 import { completions } from './completions.js';
 import { createEmbeddings } from './embeddings.js';

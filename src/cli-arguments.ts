@@ -1,5 +1,5 @@
 import { parseArgs } from 'node:util';
-import { ucFirst } from '@7-docs/shared/string.js';
+import { ucFirst } from '@7-docs/shared';
 import { getOrSet } from './util/storage.js';
 
 const helpText = `Tool to query content based on local files or GitHub repositories.

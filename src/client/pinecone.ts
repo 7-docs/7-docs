@@ -4,7 +4,7 @@ import {
   OPENAI_OUTPUT_DIMENSIONS,
   PINECONE_METRIC,
   PINECONE_POD_TYPE
-} from '@7-docs/shared/constants.js';
+} from '@7-docs/shared';
 import { PINECONE_URL, PINECONE_API_KEY } from '../env.js';
 import { forEachChunkedAsync } from '../util/array.js';
 import { set } from '../util/storage.js';

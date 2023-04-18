@@ -1,5 +1,5 @@
-import { OPENAI_OUTPUT_DIMENSIONS } from '@7-docs/shared/constants.js';
-import { normalizeNamespace } from '@7-docs/shared/string.js';
+import { OPENAI_OUTPUT_DIMENSIONS } from '@7-docs/shared';
+import { normalizeNamespace } from '@7-docs/shared';
 import { set } from '../util/storage.js';
 
 export const createTable = (namespace: string) => {

@@ -1,5 +1,5 @@
-import { EMBEDDING_MATCH_COUNT, SUPABASE_SIMILARITY_THRESHOLD } from '@7-docs/shared/constants.js';
-import { normalizeNamespace } from '@7-docs/shared/string.js';
+import { EMBEDDING_MATCH_COUNT, SUPABASE_SIMILARITY_THRESHOLD } from '@7-docs/shared';
+import { normalizeNamespace } from '@7-docs/shared';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { SUPABASE_URL, SUPABASE_API_KEY } from '../env.js';
 import type { VectorDatabase, UpsertVectorOptions, QueryOptions } from '../types.js';

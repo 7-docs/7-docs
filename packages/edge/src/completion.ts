@@ -1,5 +1,5 @@
-import { uniqueByProperty } from '@7-docs/shared/array.js';
-import { getPrompt } from '@7-docs/shared/prompt.js';
+import { uniqueByProperty } from '@7-docs/shared';
+import { getPrompt } from '@7-docs/shared';
 import { OpenAI } from './openai/v1/client.js';
 import { isChatCompletionModel } from './openai/v1/util.js';
 import { TransformWithEvent } from './util/stream.js';

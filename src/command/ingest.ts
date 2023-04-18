@@ -1,5 +1,5 @@
 import { OpenAI } from '@7-docs/edge/openai';
-import { CHUNK_SIZE, OPENAI_EMBEDDING_MODEL } from '@7-docs/shared/constants.js';
+import { CHUNK_SIZE, OPENAI_EMBEDDING_MODEL } from '@7-docs/shared';
 import * as fs from '../client/fs.js';
 import * as github from '../client/github.js';
 import * as http from '../client/http.js';

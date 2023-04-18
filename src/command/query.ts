@@ -1,6 +1,6 @@
 import { OpenAI } from '@7-docs/edge/openai';
-import { OPENAI_EMBEDDING_MODEL } from '@7-docs/shared/constants.js';
-import { getPrompt } from '@7-docs/shared/prompt.js';
+import { OPENAI_EMBEDDING_MODEL } from '@7-docs/shared';
+import { getPrompt } from '@7-docs/shared';
 import { Pinecone } from '../client/pinecone.js';
 import { Supabase } from '../client/supabase.js';
 import { OPENAI_API_KEY } from '../env.js';
