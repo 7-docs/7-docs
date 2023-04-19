@@ -11,9 +11,10 @@ Commands:
   query (default)
 
 ingest
-  --source [name]         Source to fetch content from. Options: fs, github (default: fs)
+  --source [name]         Source to fetch content from. Options: fs, github, http (default: fs)
   --repo [owner/repo]     Repository to fetch file contents from (only required for --source github)
-  --files [pattern]       Glob patterns for the source text files (can be repeated)
+  --files [pattern]       Glob patterns for the source files (can be repeated)
+  --url [url]             URL to fetch content from (use with --http, can be repeated)
   --db [name]             Target database to store the embedding vectors. Options: pinecone, supabase (default: pinecone)
   --namespace [name]      Namespace to store the embedding vectors
 
@@ -78,6 +79,7 @@ export const parseConfig = async () => {
       debug: { type: 'boolean' },
       source: { type: 'string', default: 'fs' },
       files: { type: 'string', multiple: true },
+      url: { type: 'string', multiple: true },
       repo: { type: 'string' },
       index: { type: 'string' },
       namespace: { type: 'string' },
@@ -94,7 +96,7 @@ export const parseConfig = async () => {
 
   const [command, ...restPositionals] = parsedArgs.positionals;
   const source = parsedArgs.values['source'];
-  const patterns = parsedArgs.values['files'] ?? [];
+  const sourceIdentifiers = [...(parsedArgs.values['files'] ?? []), ...(parsedArgs.values['url'] ?? [])];
   const input = restPositionals.join(' ').trim();
 
   const db = getOrSet('db', 'type', parsedArgs.values['db'], 'pinecone');
@@ -106,9 +108,9 @@ export const parseConfig = async () => {
     debug: parsedArgs.values.debug,
     command,
     source,
-    db: ucFirst(db),
+    sourceIdentifiers,
     repo,
-    patterns,
+    db: ucFirst(db),
     index,
     namespace,
     input,

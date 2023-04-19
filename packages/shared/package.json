@@ -15,7 +15,10 @@
     "email": "lars@webpro.nl"
   },
   "type": "module",
-  "exports": "./dist/index.js",
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "import": "./dist/index.js"
+  },
   "files": [
     "dist"
   ],

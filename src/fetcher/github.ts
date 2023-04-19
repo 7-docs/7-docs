@@ -29,7 +29,7 @@ const getTree = async (repoId: string, tree_sha = 'HEAD'): Promise<Tree> => {
   return response.data.tree;
 };
 
-export const fetchFiles: FetchFiles = async (patterns, repoId) => {
+export const fetchFiles: FetchFiles = async (patterns, { repo: repoId }) => {
   const tree = await getTree(repoId);
   const files = tree.filter(file => file.path && file.type === 'blob' && micromatch.isMatch(file.path, patterns));
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
