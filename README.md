@@ -23,7 +23,11 @@ package and related plugin repositories). The source code is at [github.com/7-do
 - [Installation][6]
 - [Pinecone][7]
 - [Supabase][8]
-- [GitHub][9]
+- [Ingestion](#ingestion)
+  - [Local](#local)
+  - [GitHub][9]
+  - [HTTP](#http)
+  - [PDF](#pdf)
 
 ## Status
 
@@ -35,8 +39,8 @@ Ideas for extension:
 
 - Make it chatty, conversational (it's only single shots now)
 - Better support for source code files (e.g. Python, TypeScript).
-- Support more source file formats (e.g. PDF, HTML, web scraping).
 - Make it easy to create a user-friendly web UI to query.
+- Follow links when fetching HTML using `--source http`
 
 ## Prerequisites
 
@@ -109,18 +113,6 @@ Create or select an index:
 
 ![Demo of Pinecone index creation][15]
 
-Let's ingest some text or Markdown files, make sure to adjust the `--files` pattern to match yours:
-
-```shell
-7d ingest --files README.md --files 'docs/**/*.md' --namespace my-collection
-```
-
-Now you can start asking questions about it:
-
-```shell
-7d Can you please give me a summary?
-```
-
 ## Supabase
 
 Make sure to have a Supabase account and set `SUPABASE_URL` and `SUPABASE_API_KEY`:
@@ -136,31 +128,57 @@ Print the SQL query to enable [pgvector][16] and create a table (paste the outpu
 7d supabase-create-table --namespace my-collection
 ```
 
+## Ingestion
+
 Let's ingest some text or Markdown files, make sure to adjust the `--files` pattern to match yours:
 
 ```shell
-7d ingest --files README.md --files 'docs/**/*.md'
+7d ingest --files README.md --files 'docs/**/*.md' --namespace my-collection
 ```
+
+Note that ingestion from remote resources ([GitHub](#github) and/or [HTTP](#http)) has the benefit to link back to the
+original source when retrieving answers. This is not possible when using local files.
+
+### GitHub
+
+Use `--source github` and file patterns to ingest from a GitHub repo:
+
+```shell
+7d ingest --source github --repo reactjs/react.dev --files 'src/content/reference/react/*.md' --namespace react
+```
+
+![Demo of ingest and query][18]
+
+You can start without it, but once you start fetching lots of files you'll need to set `GITHUB_TOKEN`:
+
+```shell
+export GITHUB_TOKEN="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+```
+
+### HTTP
+
+Crawl content from web pages:
+
+```shell
+7d ingest --source http --url https://en.wikipedia.org/wiki/Butterfly
+```
+
+### PDF
+
+`7d` supports PDF files as well:
+
+```shell
+7d ingest --files ./my-article.pdf
+7d ingest --source github --repo webpro/webpro.nl --files 'content/*.pdf'
+```
+
+## Query
 
 Now you can start asking questions about it:
 
 ```shell
 7d Can you please give me a summary?
 ```
-
-## GitHub
-
-Instead of local files, ingest files from any GitHub repo, for instance:
-
-```shell
-7d ingest --source github --repo reactjs/react.dev --files 'src/content/reference/react/*.md' --namespace react
-```
-
-You can start without it, but once you start fetching lots of files you'll need to set `GITHUB_TOKEN`:
-
-    export GITHUB_TOKEN="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-
-![Demo of ingest and query][18]
 
 ## Other commands
 
@@ -192,9 +210,9 @@ Clear a single namespace from the current Pinecone index:
 
 ## Token Usage
 
-The recommended [text-embedding-ada-002][19] model is used to create embeddings. Ingestion uses some tokens when
-ingesting lots of files. Queries use only a few tokens (using the [gpt-3.5-turbo][20] model by default). See the console
-for details.
+The OpenAI recommendation [text-embedding-ada-002][19] model is used to create embeddings. Ingestion uses some tokens
+when ingesting lots of files. Queries use only a few tokens (using the [gpt-3.5-turbo][20] model by default). See the
+console for details.
 
 ## Inspired by
 
@@ -216,7 +234,7 @@ for details.
 [12]: #global
 [13]: #local
 [14]: https://platform.openai.com/account/api-keys
-[15]: assets/pinecone-create-index.gif
+[15]: ./assets/pinecone-create-index.gif
 [16]: https://supabase.com/docs/guides/database/extensions/pgvector
 [17]: https://app.supabase.com/projects
 [18]: ./assets/ingest-and-query-2.gif
