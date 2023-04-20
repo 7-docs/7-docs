@@ -1,6 +1,6 @@
 {
   "name": "@7-docs/edge",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Package to use 7-docs from edge functions",
   "homepage": "https://github.com/7-docs/7-docs",
   "bugs": "https://github.com/7-docs/7-docs/issues",
@@ -31,7 +31,7 @@
     "lint": "eslint src"
   },
   "dependencies": {
-    "@7-docs/shared": "0.0.2"
+    "@7-docs/shared": "0.0.3"
   },
   "publishConfig": {
     "access": "public"
