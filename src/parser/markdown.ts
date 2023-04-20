@@ -1,71 +1,65 @@
+import { toMarkdown } from 'mdast-util-to-markdown';
 import { remark } from 'remark';
 import frontmatter from 'remark-frontmatter';
 import gfm from 'remark-gfm';
-import stripMarkdown from 'strip-markdown';
+import { u } from 'unist-builder';
 import yaml from 'yaml';
 import { splitContentAtSentence } from './util.js';
-import type { DocumentParser, DocumentSection } from '../types.js';
+import type { DocumentParser } from '../types.js';
+import type { Root, Literal, PhrasingContent } from 'mdast';
 
 const remarkInstance = remark().use(gfm).use(frontmatter);
 
-function stripMarkdownSyntax(content: string): string {
-  const tree = remarkInstance.parse(content);
-  const strippedTree = remarkInstance().use(stripMarkdown).runSync(tree);
-  return remarkInstance.stringify(strippedTree).trim();
-}
+type Section = {
+  title: string;
+  tree: Root;
+};
+
+// @ts-ignore TODO
+const isLiteral = (node: PhrasingContent): node is Literal => 'value' in node;
 
 export const parser: DocumentParser = (markdown, maxLength) => {
   const tree = remarkInstance.parse(markdown);
 
-  let title: string | null = null;
-  const rawSections: DocumentSection[] = [];
-  let currentSection: DocumentSection | null = null;
+  let documentTitle: string | null = null;
 
-  for (const node of tree.children) {
+  const sectionTrees = tree.children.reduce<Section[]>((trees, node) => {
     if (node.type === 'yaml') {
-      const parsedYaml = yaml.parse(node.value as string);
-      if (parsedYaml.title) {
-        title = parsedYaml.title;
-      }
-    } else if (node.type === 'heading') {
-      const headerText = node.children.map(child => (child.type === 'text' ? child.value : '')).join(' ');
-
-      if (node.depth === 1 && !title) {
-        title = headerText;
-      }
-
-      if (currentSection) {
-        rawSections.push(currentSection);
-        currentSection = null;
-      }
-
-      currentSection = {
-        header: headerText,
-        content: headerText + '. '
-      };
-    } else if (currentSection) {
-      currentSection.content += remarkInstance.stringify({ type: 'root', children: [node] });
+      const parsedYaml = yaml.parse(node.value);
+      if (parsedYaml.title) documentTitle = parsedYaml.title;
+      return trees;
     }
-  }
 
-  if (currentSection) {
-    rawSections.push(currentSection);
-    currentSection = null;
-  }
+    const [lastTree] = trees.slice(-1);
 
-  const sections: DocumentSection[] = [];
-  for (const rawSection of rawSections) {
-    const splitContent = splitContentAtSentence(rawSection.content, maxLength, stripMarkdownSyntax);
-    splitContent.forEach(chunk => {
-      sections.push({
-        header: rawSection.header,
-        content: rawSection.header + '. ' + chunk
-      });
-    });
-  }
+    if (!lastTree?.tree || node.type === 'heading') {
+      let title = '';
+      if (node.type === 'heading') {
+        title = node.children.map(child => (isLiteral(child) ? child.value : '')).join(' ');
+        if (node.depth === 1 && !documentTitle) {
+          documentTitle = title;
+        }
+      }
+      const tree = u('root', [node]);
+      return trees.concat({ title, tree });
+    }
+
+    lastTree.tree.children.push(node);
+    return trees;
+  }, []);
+
+  const sectionContents = sectionTrees.map(section => ({
+    title: section.title,
+    content: toMarkdown(section.tree)
+  }));
+
+  const sections = sectionContents.flatMap(section => {
+    const subsections = splitContentAtSentence(section.content, maxLength);
+    return subsections.map(s => ({ title: section.title, content: s }));
+  });
 
   return {
-    title: title || '',
+    title: documentTitle || '',
     sections
   };
 };

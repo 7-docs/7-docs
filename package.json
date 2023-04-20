@@ -56,6 +56,7 @@
     "cheerio": "^1.0.0-rc.12",
     "dotenv": "^16.0.3",
     "fast-glob": "^3.2.12",
+    "mdast-util-to-markdown": "^1.5.0",
     "micromatch": "^4.0.5",
     "ora": "^6.3.0",
     "path2d-polyfill": "^2.0.1",
@@ -63,7 +64,7 @@
     "remark": "^14.0.2",
     "remark-frontmatter": "^4.0.1",
     "remark-gfm": "^3.0.1",
-    "strip-markdown": "^5.0.0",
+    "unist-builder": "^3.0.1",
     "yaml": "^2.2.1"
   },
   "devDependencies": {
@@ -76,7 +77,8 @@
     "eslint-import-resolver-exports": "^1.0.0-beta.5",
     "eslint-import-resolver-typescript": "^3.5.5",
     "eslint-plugin-import": "^2.27.5",
-    "knip": "^2.9.0",
+    "knip": "^2.10.0",
+    "mdast": "^3.0.0",
     "openai": "^3.2.1",
     "release-it": "^15.10.1",
     "remark-cli": "^11.0.0",

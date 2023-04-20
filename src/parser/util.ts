@@ -1,21 +1,16 @@
-export const splitTextIntoSentences = (content: string) =>
+const splitTextIntoSentences = (content: string) =>
   content
     .replace(/\s+/gm, ' ')
     .trim()
     .split(/(?<=[.?!]\s)\s*/g);
 
-export const splitContentAtSentence = (
-  content: string,
-  maxLength: number,
-  parse = (text: string) => text
-): string[] => {
+export const splitContentAtSentence = (content: string, maxLength: number): string[] => {
   const sentences = splitTextIntoSentences(content);
   const chunks: string[] = [];
   let currentChunk = '';
 
   for (const sentence of sentences) {
-    const parsedSentence = parse(sentence);
-    if (currentChunk.length + parsedSentence.length <= maxLength) {
+    if (currentChunk.length + sentence.length <= maxLength) {
       currentChunk += sentence;
     } else {
       chunks.push(currentChunk);
