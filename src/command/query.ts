@@ -48,8 +48,8 @@ export const query = async ({ db, namespace, query, stream }: Options) => {
       throw new Error(`No results returned from ${db} query`);
     } else {
       const links = uniqueByProperty(metadata, 'url');
-      const content = metadata.map(metadata => metadata.content);
-      const prompt = getPrompt(content, query);
+      const context = metadata.map(metadata => metadata.content);
+      const prompt = getPrompt({ context, query });
 
       if (prompt) {
         const messages: ChatCompletionRequestMessage[] = [];

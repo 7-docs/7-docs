@@ -10,10 +10,11 @@ import type { ChatCompletionRequestMessage } from 'openai';
 interface Options {
   OPENAI_API_KEY: string;
   query: (vector: number[]) => Promise<MetaData[]>;
+  prompt?: string;
 }
 
 export const getCompletionHandler = (options: Options) => {
-  const { OPENAI_API_KEY, query } = options;
+  const { OPENAI_API_KEY, query, prompt } = options;
 
   if (!OPENAI_API_KEY) throw new Error('OPENAI_API_KEY required');
 
@@ -31,8 +32,8 @@ export const getCompletionHandler = (options: Options) => {
 
     const queryResults = await query(vector);
 
-    const content = queryResults.map(metadata => metadata.content);
-    const prompt = getPrompt(content, input);
+    const context = queryResults.map(metadata => metadata.content);
+    const finalPrompt = getPrompt({ prompt, context, query: input });
 
     const uniqueByUrl = uniqueByProperty(queryResults, 'url');
     const metadata = uniqueByUrl.map(m => ({ title: m.title, url: m.url }));
@@ -42,7 +43,7 @@ export const getCompletionHandler = (options: Options) => {
       const messages: ChatCompletionRequestMessage[] = [];
       messages.push({
         role: 'user',
-        content: prompt
+        content: finalPrompt
       });
 
       const body = { model: completion_model, messages };
@@ -51,7 +52,7 @@ export const getCompletionHandler = (options: Options) => {
       const transformedStream = completionResponse.body.pipeThrough(streamWithEvent.getTransformStream());
       return streamResponse(transformedStream);
     } else {
-      const body = { model: completion_model, prompt };
+      const body = { model: completion_model, prompt: finalPrompt };
       const completionResponse = await client.completions(body);
       if (!completionResponse.body) return new Response();
       const transformedStream = completionResponse.body.pipeThrough(streamWithEvent.getTransformStream());
