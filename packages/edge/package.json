@@ -1,6 +1,6 @@
 {
   "name": "@7-docs/edge",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Package to use 7-docs from edge functions",
   "homepage": "https://github.com/7-docs/7-docs",
   "bugs": "https://github.com/7-docs/7-docs/issues",
