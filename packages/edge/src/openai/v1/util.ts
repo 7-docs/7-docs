@@ -8,6 +8,16 @@ const chatCompletionModels = [
 ];
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const completionModels = ['text-davinci-003', 'text-davinci-002', 'text-curie-001', 'text-babbage-001', 'text-ada-001'];
+const completionModels = [
+  'text-davinci-003',
+  'text-davinci-002',
+  'text-curie-001',
+  'text-babbage-001',
+  'text-ada-001',
+  'davinci',
+  'curie',
+  'babbage',
+  'ada'
+];
 
 export const isChatCompletionModel = (value: string) => chatCompletionModels.includes(value);

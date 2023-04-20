@@ -58,8 +58,6 @@ export const ingest = async ({ source, sourceIdentifiers, repo, db, namespace, i
 
         const { title, sections } = await parseDocument(filePath, content, CHUNK_SIZE);
 
-        console.log({ title, sections });
-
         if (isDryRun) continue;
 
         const requests = sections.map(section => {
