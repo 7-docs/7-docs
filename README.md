@@ -13,26 +13,26 @@ with ChatGPT. Multiple sources can be combined into one namespace.
 
 ### Web GUI
 
-A basic demonstration is currently running at [7-docs-deno-supabase.deno.dev][2] (content ingested from the release-it
-package and related plugin repositories). The source code is at [github.com/7-docs/deno-supabase][3].
+A demo runs at [7-docs-demo-react.deno.dev][2] (content ingested from the [react.dev][3] documentation).
+The source code is at [github.com/7-docs/demo-react][4].
 
 ## Content
 
-- [Status][4]
-- [Prerequisites][5]
-- [Installation][6]
-- [Pinecone][7]
-- [Supabase][8]
-- [Ingestion](#ingestion)
-  - [Local](#local)
-  - [GitHub][9]
-  - [HTTP](#http)
-  - [PDF](#pdf)
+- [Status][5]
+- [Prerequisites][6]
+- [Installation][7]
+- [Pinecone][8]
+- [Supabase][9]
+- [Ingestion][10]
+  - [Local][11]
+  - [GitHub][12]
+  - [HTTP][13]
+  - [PDF][14]
 
 ## Status
 
 This is still in an early alpha phase. There is a command-line interface, it supports text and Markdown files as input,
-uses OpenAI `text-embedding-ada-002` for embeddings, [Pinecone][10] and [Supabase][11] for vector storage, and the
+uses OpenAI `text-embedding-ada-002` for embeddings, [Pinecone][15] and [Supabase][16] for vector storage, and the
 OpenAI `gpt-3.5-turbo` completion model.
 
 Ideas for extension:
@@ -53,8 +53,8 @@ Ideas for extension:
 
 You can install 7-docs in two ways:
 
-- [Global][12] to manage knowledge base(s) from the command line.
-- [Local][13] to manage the knowledge base(s) of a repository.
+- [Global][17] to manage knowledge base(s) from the command line.
+- [Local][11] to manage the knowledge base(s) of a repository.
 
 ### Global
 
@@ -64,7 +64,7 @@ Use `7d` from anywhere to manage your personal knowledge bases:
 npm install --global 7-docs
 ```
 
-Get an [OpenAI API key][14] and make it available as en environment variable:
+Get an [OpenAI API key][18] and make it available as en environment variable:
 
 ```shell
 export OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -94,7 +94,7 @@ OPENAI_API_KEY="sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 For local installations, use `npx 7d` (over just `7d`).
 
-Now let's choose either [Pinecone][7] or [Supabase][8]!
+Now let's choose either [Pinecone][8] or [Supabase][9]!
 
 ## Pinecone
 
@@ -111,7 +111,7 @@ Create or select an index:
 7d pinecone-create-index --index my-index
 ```
 
-![Demo of Pinecone index creation][15]
+![Demo of Pinecone index creation][19]
 
 ## Supabase
 
@@ -122,7 +122,7 @@ export SUPABASE_URL="https://xxxxxxxxxxxxxxxxxxxx.supabase.co"
 export SUPABASE_API_KEY="ey..."
 ```
 
-Print the SQL query to enable [pgvector][16] and create a table (paste the output in the [Supabase web admin][17]):
+Print the SQL query to enable [pgvector][20] and create a table (paste the output in the [Supabase web admin][21]):
 
 ```shell
 7d supabase-create-table --namespace my-collection
@@ -136,7 +136,7 @@ Let's ingest some text or Markdown files, make sure to adjust the `--files` patt
 7d ingest --files README.md --files 'docs/**/*.md' --namespace my-collection
 ```
 
-Note that ingestion from remote resources ([GitHub](#github) and/or [HTTP](#http)) has the benefit to link back to the
+Note that ingestion from remote resources ([GitHub][12] and/or [HTTP][13]) has the benefit to link back to the
 original source when retrieving answers. This is not possible when using local files.
 
 ### GitHub
@@ -147,7 +147,7 @@ Use `--source github` and file patterns to ingest from a GitHub repo:
 7d ingest --source github --repo reactjs/react.dev --files 'src/content/reference/react/*.md' --namespace react
 ```
 
-![Demo of ingest and query][18]
+![Demo of ingest and query][22]
 
 You can start without it, but once you start fetching lots of files you'll need to set `GITHUB_TOKEN`:
 
@@ -210,36 +210,40 @@ Clear a single namespace from the current Pinecone index:
 
 ## Token Usage
 
-The OpenAI recommendation [text-embedding-ada-002][19] model is used to create embeddings. Ingestion uses some tokens
-when ingesting lots of files. Queries use only a few tokens (using the [gpt-3.5-turbo][20] model by default). See the
+The OpenAI recommendation [text-embedding-ada-002][23] model is used to create embeddings. Ingestion uses some tokens
+when ingesting lots of files. Queries use only a few tokens (using the [gpt-3.5-turbo][24] model by default). See the
 console for details.
 
 ## Inspired by
 
-- [Paul Kinlan][21]
-- [OpenAI Cookbook][22]
-- [Polymath][23]
+- [Paul Kinlan][25]
+- [OpenAI Cookbook][26]
+- [Polymath][27]
 
 [1]: ./assets/ingest-and-query.gif
-[2]: https://7-docs-deno-supabase.deno.dev
-[3]: https://github.com/7-docs/deno-supabase
-[4]: #status
-[5]: #prerequisites
-[6]: #installation
-[7]: #pinecone
-[8]: #supabase
-[9]: #github
-[10]: https://www.pinecone.io
-[11]: https://supabase.com
-[12]: #global
-[13]: #local
-[14]: https://platform.openai.com/account/api-keys
-[15]: ./assets/pinecone-create-index.gif
-[16]: https://supabase.com/docs/guides/database/extensions/pgvector
-[17]: https://app.supabase.com/projects
-[18]: ./assets/ingest-and-query-2.gif
-[19]: https://platform.openai.com/docs/guides/embeddings/what-are-embeddings
-[20]: https://platform.openai.com/docs/guides/chat
-[21]: https://github.com/PaulKinlan/paul.kinlan.me
-[22]: https://github.com/openai/openai-cookbook
-[23]: https://github.com/polymath-ai/polymath-ai
+[2]: https://7-docs-demo-react.deno.dev
+[3]: https://react.dev
+[4]: https://github.com/7-docs/demo-react
+[5]: #status
+[6]: #prerequisites
+[7]: #installation
+[8]: #pinecone
+[9]: #supabase
+[10]: #ingestion
+[11]: #local
+[12]: #github
+[13]: #http
+[14]: #pdf
+[15]: https://www.pinecone.io
+[16]: https://supabase.com
+[17]: #global
+[18]: https://platform.openai.com/account/api-keys
+[19]: ./assets/pinecone-create-index.gif
+[20]: https://supabase.com/docs/guides/database/extensions/pgvector
+[21]: https://app.supabase.com/projects
+[22]: ./assets/ingest-and-query-2.gif
+[23]: https://platform.openai.com/docs/guides/embeddings/what-are-embeddings
+[24]: https://platform.openai.com/docs/guides/chat
+[25]: https://github.com/PaulKinlan/paul.kinlan.me
+[26]: https://github.com/openai/openai-cookbook
+[27]: https://github.com/polymath-ai/polymath-ai
