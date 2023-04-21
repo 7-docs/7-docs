@@ -13,7 +13,13 @@ export interface Usage {
   total_tokens: number;
 }
 
-export type Params = Record<string, string | null>;
+export type Params = {
+  query?: string;
+  previousQueries?: string[];
+  previousResponses?: string[];
+  embedding_model?: string;
+  completion_model?: string;
+};
 
 interface BaseEventData {
   id: string;

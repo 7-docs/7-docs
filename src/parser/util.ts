@@ -1,8 +1,4 @@
-const splitTextIntoSentences = (content: string) =>
-  content
-    .replace(/\s+/gm, ' ')
-    .trim()
-    .split(/(?<=[.?!]\s)\s*/g);
+import { splitTextIntoSentences } from '@7-docs/shared';
 
 export const splitContentAtSentence = (content: string, maxLength: number): string[] => {
   const sentences = splitTextIntoSentences(content);

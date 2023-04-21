@@ -5,9 +5,17 @@ export const getParams = async (req: Request): Promise<Params> => {
   if (method === 'GET') {
     const url = new URL(req.url);
     const query = url.searchParams.get('query') ?? '';
-    const embedding_model = url.searchParams.get('embedding_model');
-    const completion_model = url.searchParams.get('completion_model');
-    return { query: decodeURIComponent(query), embedding_model, completion_model };
+    const previousQueries = url.searchParams.getAll('previousQueries');
+    const previousResponses = url.searchParams.getAll('previousResponses');
+    const embedding_model = url.searchParams.get('embedding_model') ?? undefined;
+    const completion_model = url.searchParams.get('completion_model') ?? undefined;
+    return {
+      query: decodeURIComponent(query),
+      previousQueries: previousQueries.map(decodeURIComponent),
+      previousResponses: previousResponses.map(decodeURIComponent),
+      embedding_model,
+      completion_model
+    };
   } else {
     return await req.json();
   }

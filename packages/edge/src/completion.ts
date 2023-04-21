@@ -1,5 +1,4 @@
-import { uniqueByProperty } from '@7-docs/shared';
-import { getPrompt } from '@7-docs/shared';
+import { uniqueByProperty, getPrompt } from '@7-docs/shared';
 import { OpenAI } from './openai/v1/client.js';
 import { isChatCompletionModel } from './openai/v1/util.js';
 import { TransformWithEvent } from './util/stream.js';
@@ -10,24 +9,34 @@ import type { ChatCompletionRequestMessage } from 'openai';
 interface Options {
   OPENAI_API_KEY: string;
   query: (vector: number[]) => Promise<MetaData[]>;
+  system?: string;
   prompt?: string;
 }
 
 export const getCompletionHandler = (options: Options) => {
-  const { OPENAI_API_KEY, query, prompt } = options;
+  const { OPENAI_API_KEY, system, query, prompt } = options;
 
   if (!OPENAI_API_KEY) throw new Error('OPENAI_API_KEY required');
 
   const client = new OpenAI(OPENAI_API_KEY);
 
   return async (req: Request): Promise<Response> => {
-    const { query: input, embedding_model, completion_model } = await getParams(req);
+    const {
+      query: input,
+      previousQueries = [],
+      previousResponses = [],
+      embedding_model,
+      completion_model
+    } = await getParams(req);
 
     if (!input) throw new Error('input required');
     if (!embedding_model) throw new Error('embedding_model required');
     if (!completion_model) throw new Error('completion_model required');
 
-    const { embeddings } = await client.createEmbeddings({ model: embedding_model, input });
+    const { embeddings } = await client.createEmbeddings({
+      model: embedding_model,
+      input: input + (previousQueries ? ' ' + previousQueries.join(' ') : '')
+    });
     const [vector] = embeddings;
 
     const queryResults = await query(vector);
@@ -41,6 +50,29 @@ export const getCompletionHandler = (options: Options) => {
 
     if (isChatCompletionModel(completion_model)) {
       const messages: ChatCompletionRequestMessage[] = [];
+      if (system) {
+        messages.push({
+          role: 'system',
+          content: system
+        });
+      }
+
+      if (previousQueries && previousQueries.length > 0) {
+        previousQueries.forEach((previousQuery, index) => {
+          messages.push({
+            role: 'user',
+            content: previousQuery
+          });
+
+          if (previousResponses && previousResponses[index]) {
+            messages.push({
+              role: 'assistant',
+              content: previousResponses[index]
+            });
+          }
+        });
+      }
+
       messages.push({
         role: 'user',
         content: finalPrompt
