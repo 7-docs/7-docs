@@ -3,7 +3,7 @@ import { OpenAI } from './openai/v1/client.js';
 import { isChatCompletionModel } from './openai/v1/util.js';
 import { TransformWithEvent } from './util/stream.js';
 import { getParams, streamResponse } from './util.js';
-import type { MetaData } from '@7-docs/shared';
+import type { MetaData, StreamMetaData } from '@7-docs/shared';
 import type { ChatCompletionRequestMessage } from 'openai';
 
 interface Options {
@@ -45,7 +45,7 @@ export const getCompletionHandler = (options: Options) => {
     const finalPrompt = getPrompt({ prompt, context, query: input });
 
     const uniqueByUrl = uniqueByProperty(queryResults, 'url');
-    const metadata = uniqueByUrl.map(m => ({ title: m.title, url: m.url }));
+    const metadata: StreamMetaData[] = uniqueByUrl.map(m => ({ title: m.title, url: m.url }));
     const streamWithEvent = new TransformWithEvent({ event: 'metadata', data: JSON.stringify(metadata) });
 
     if (isChatCompletionModel(completion_model)) {

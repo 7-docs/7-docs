@@ -47,7 +47,7 @@ export interface CompletionEventData extends BaseEventData {
 
 export type EventData = CompletionEventData | ChatCompletionEventData;
 
-export type Metadata = {
+export type StreamMetaData = {
   title: string;
   url: string;
 };
