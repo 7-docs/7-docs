@@ -1,6 +1,6 @@
 {
   "name": "7-docs",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Build a knowledge base and ask it questions through ChatGPT",
   "keywords": [
     "docs",
@@ -49,8 +49,8 @@
     ]
   },
   "dependencies": {
-    "@7-docs/edge": "0.0.3",
-    "@7-docs/shared": "0.0.3",
+    "@7-docs/edge": "0.0.5",
+    "@7-docs/shared": "0.0.4",
     "@octokit/rest": "^19.0.7",
     "@supabase/supabase-js": "^2.15.0",
     "cheerio": "^1.0.0-rc.12",
