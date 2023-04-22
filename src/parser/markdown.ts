@@ -1,3 +1,4 @@
+import { gfmToMarkdown } from 'mdast-util-gfm';
 import { toMarkdown } from 'mdast-util-to-markdown';
 import { remark } from 'remark';
 import frontmatter from 'remark-frontmatter';
@@ -50,7 +51,7 @@ export const parser: DocumentParser = (markdown, maxLength) => {
 
   const sectionContents = sectionTrees.map(section => ({
     title: section.title,
-    content: toMarkdown(section.tree)
+    content: toMarkdown(section.tree, { extensions: [gfmToMarkdown()] })
   }));
 
   const sections = sectionContents.flatMap(section => {
