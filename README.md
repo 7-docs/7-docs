@@ -13,8 +13,8 @@ with ChatGPT. Multiple sources can be combined into one namespace.
 
 ### Web GUI
 
-A demo runs at [7-docs-demo-react.deno.dev][2] (content ingested from the [react.dev][3] documentation).
-The source code is at [github.com/7-docs/demo-react][4].
+A demo runs at [7d-next.fly.dev][2] (content ingested from the [react.dev][3] documentation). The source code is at
+[github.com/7-docs/demo-next][4].
 
 ## Content
 
@@ -221,7 +221,7 @@ console for details.
 - [Polymath][27]
 
 [1]: ./assets/ingest-and-query.gif
-[2]: https://7-docs-demo-react.deno.dev
+[2]: https://7d-next.fly.dev
 [3]: https://react.dev
 [4]: https://github.com/7-docs/demo-react
 [5]: #status
