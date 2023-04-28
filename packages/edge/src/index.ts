@@ -13,3 +13,7 @@ export type {
   CompletionEventData,
   Usage
 } from '@7-docs/shared';
+
+export * as pinecone from './pinecone/index.js';
+
+export * as supabase from './supabase/index.js';
