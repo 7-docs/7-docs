@@ -8,7 +8,7 @@ import { uniqueByProperty } from '../util/array.js';
 import ora from '../util/ora.js';
 import { writeToStdOut } from '../util/stream.js';
 import { addTokens, getInitUsage } from '../util/usage.js';
-import type { ChatCompletionRequestMessage } from 'openai';
+import type { ChatCompletionRequestMessage } from '@7-docs/shared';
 
 const targets = {
   Pinecone,

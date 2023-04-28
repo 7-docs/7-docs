@@ -1,3 +1,5 @@
+export type * from './openai.js';
+
 // Don't allow `null` values (not supported in Pinecone)
 export interface MetaData {
   filePath: string;

@@ -1,4 +1,4 @@
-import type { CreateCompletionRequest } from 'openai';
+import type { CreateCompletionRequest } from '@7-docs/shared';
 
 interface CompletionsOptions {
   token: string;

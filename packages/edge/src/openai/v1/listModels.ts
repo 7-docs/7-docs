@@ -1,4 +1,4 @@
-import type { ListModelsResponse } from 'openai';
+import type { ListModelsResponse } from '@7-docs/shared';
 
 interface ListModelsOptions {
   token: string;

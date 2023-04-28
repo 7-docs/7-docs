@@ -8,7 +8,7 @@ import { chatCompletions } from './chatCompletions.js';
 import { completions } from './completions.js';
 import { createEmbeddings } from './embeddings.js';
 import { listModels } from './listModels.js';
-import type { CreateChatCompletionRequest, CreateCompletionRequest } from 'openai';
+import type { CreateChatCompletionRequest, CreateCompletionRequest } from '@7-docs/shared';
 
 const defaults = {
   max_tokens: OPENAI_TOKENS_FOR_COMPLETION,
