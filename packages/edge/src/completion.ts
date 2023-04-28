@@ -26,7 +26,8 @@ export const getCompletionHandler = (options: Options) => {
       previousQueries = [],
       previousResponses = [],
       embedding_model,
-      completion_model
+      completion_model,
+      stream = true
     } = await getParams(req);
 
     if (!input) throw new Error('input required');
@@ -81,12 +82,14 @@ export const getCompletionHandler = (options: Options) => {
       const body = { model: completion_model, messages };
       const completionResponse = await client.chatCompletions(body);
       if (!completionResponse.body) return new Response();
+      if (!stream) return completionResponse;
       const transformedStream = completionResponse.body.pipeThrough(streamWithEvent.getTransformStream());
       return streamResponse(transformedStream);
     } else {
       const body = { model: completion_model, prompt: finalPrompt };
       const completionResponse = await client.completions(body);
       if (!completionResponse.body) return new Response();
+      if (!stream) return completionResponse;
       const transformedStream = completionResponse.body.pipeThrough(streamWithEvent.getTransformStream());
       return streamResponse(transformedStream);
     }

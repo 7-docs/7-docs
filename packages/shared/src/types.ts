@@ -19,6 +19,7 @@ export type Params = {
   previousResponses?: string[];
   embedding_model?: string;
   completion_model?: string;
+  stream?: boolean;
 };
 
 interface BaseEventData {

@@ -1,6 +1,6 @@
 export * from './completion.js';
 
-export { getDelta } from './util.js';
+export { getDelta, getText } from './util.js';
 
 export { splitTextIntoSentences } from '@7-docs/shared';
 

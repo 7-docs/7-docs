@@ -1,4 +1,5 @@
-import type { Params, EventData, ChatCompletionEventData, CompletionEventData } from '@7-docs/shared';
+import type { ChatCompletionEventData, CompletionEventData, EventData, Params } from '@7-docs/shared';
+import type { CreateChatCompletionResponse } from '@7-docs/shared';
 
 export const getParams = async (req: Request): Promise<Params> => {
   const method = req.method;
@@ -9,12 +10,15 @@ export const getParams = async (req: Request): Promise<Params> => {
     const previousResponses = url.searchParams.getAll('previousResponses');
     const embedding_model = url.searchParams.get('embedding_model') ?? undefined;
     const completion_model = url.searchParams.get('completion_model') ?? undefined;
+    const stream = true;
+
     return {
       query: decodeURIComponent(query),
       previousQueries: previousQueries.map(decodeURIComponent),
       previousResponses: previousResponses.map(decodeURIComponent),
       embedding_model,
-      completion_model
+      completion_model,
+      stream
     };
   } else {
     return await req.json();
@@ -32,3 +36,5 @@ const isCompletion = (data: EventData): data is CompletionEventData => data.obje
 
 export const getDelta = (data: EventData) =>
   isChatCompletion(data) ? data.choices[0].delta.content : isCompletion(data) ? data.choices[0].text : '';
+
+export const getText = (response: CreateChatCompletionResponse) => response.choices[0].message?.content;
