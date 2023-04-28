@@ -7,7 +7,7 @@ After ingesting content using 7-docs, it can be queried from web or the command-
 ## Usage
 
 ```ts
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.20.0';
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.21.0';
 import { getCompletionHandler } from '@7-docs/edge';
 import * as supabase from '@7-docs/edge/supabase';
 
