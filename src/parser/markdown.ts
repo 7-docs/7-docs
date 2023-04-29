@@ -3,13 +3,14 @@ import { toMarkdown } from 'mdast-util-to-markdown';
 import { remark } from 'remark';
 import frontmatter from 'remark-frontmatter';
 import gfm from 'remark-gfm';
+import inlineLinks from 'remark-inline-links';
 import { u } from 'unist-builder';
 import yaml from 'yaml';
 import { splitContentAtSentence } from './util.js';
 import type { DocumentParser } from '../types.js';
 import type { Root, Literal, PhrasingContent } from 'mdast';
 
-const remarkInstance = remark().use(gfm).use(frontmatter);
+const remarkInstance = remark().use(gfm).use(frontmatter).use(inlineLinks);
 
 type Section = {
   title: string;
@@ -20,7 +21,8 @@ type Section = {
 const isLiteral = (node: PhrasingContent): node is Literal => 'value' in node;
 
 export const parser: DocumentParser = (markdown, maxLength) => {
-  const tree = remarkInstance.parse(markdown);
+  const ast = remarkInstance.parse(markdown);
+  const tree = remarkInstance.runSync(ast);
 
   let documentTitle: string | null = null;
 

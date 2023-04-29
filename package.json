@@ -65,6 +65,7 @@
     "remark": "^14.0.2",
     "remark-frontmatter": "^4.0.1",
     "remark-gfm": "^3.0.1",
+    "remark-inline-links": "^6.0.1",
     "unist-builder": "^3.0.1",
     "yaml": "^2.2.2"
   },
