@@ -1,6 +1,6 @@
 # 7-docs
 
-Build a knowledge base and ask it questions through OpenAI APIs.
+Build a knowledge base and ask it questions through OpenAI APIs. Chat with your content!
 
 `7d` is a powerful tool to ingest text files and store them in a vector database, ready to get queried like you would
 with ChatGPT. Multiple sources can be combined into one namespace.
@@ -31,16 +31,11 @@ A demo runs at [7d-next.fly.dev][2] (content ingested from the [react.dev][3] do
 
 ## Status
 
-This is still in an early alpha phase. There is a command-line interface, it supports text and Markdown files as input,
-uses OpenAI `text-embedding-ada-002` for embeddings, [Pinecone][15] and [Supabase][16] for vector storage, and the
-OpenAI `gpt-3.5-turbo` completion model.
+This is still in an early alpha phase. There is a command-line interface. Plain text, Markdown and PDF files are
+supported as input. OpenAI `text-embedding-ada-002` is used to create embeddings. [Pinecone][15] and [Supabase][16] are
+supported for vector storage. The OpenAI `gpt-3.5-turbo` model is used for chat completions.
 
-Ideas for extension:
-
-- Make it chatty, conversational (it's only single shots now)
-- Better support for source code files (e.g. Python, TypeScript).
-- Make it easy to create a user-friendly web UI to query.
-- Follow links when fetching HTML using `--source http`
+Also see the [7-docs overview][17] for an overview of packages and starterkits.
 
 ## Prerequisites
 
@@ -53,7 +48,7 @@ Ideas for extension:
 
 You can install 7-docs in two ways:
 
-- [Global][17] to manage knowledge base(s) from the command line.
+- [Global][18] to manage knowledge base(s) from the command line.
 - [Local][11] to manage the knowledge base(s) of a repository.
 
 ### Global
@@ -64,7 +59,7 @@ Use `7d` from anywhere to manage your personal knowledge bases:
 npm install --global 7-docs
 ```
 
-Get an [OpenAI API key][18] and make it available as en environment variable:
+Get an [OpenAI API key][19] and make it available as en environment variable:
 
 ```shell
 export OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -111,7 +106,7 @@ Create or select an index:
 7d pinecone-create-index --index my-index
 ```
 
-![Demo of Pinecone index creation][19]
+![Demo of Pinecone index creation][20]
 
 ## Supabase
 
@@ -122,7 +117,7 @@ export SUPABASE_URL="https://xxxxxxxxxxxxxxxxxxxx.supabase.co"
 export SUPABASE_API_KEY="ey..."
 ```
 
-Print the SQL query to enable [pgvector][20] and create a table (paste the output in the [Supabase web admin][21]):
+Print the SQL query to enable [pgvector][21] and create a table (paste the output in the [Supabase web admin][22]):
 
 ```shell
 7d supabase-create-table --namespace my-collection
@@ -136,8 +131,8 @@ Let's ingest some text or Markdown files, make sure to adjust the `--files` patt
 7d ingest --files README.md --files 'docs/**/*.md' --namespace my-collection
 ```
 
-Note that ingestion from remote resources ([GitHub][12] and/or [HTTP][13]) has the benefit to link back to the
-original source when retrieving answers. This is not possible when using local files.
+Note that ingestion from remote resources ([GitHub][12] and/or [HTTP][13]) has the benefit to link back to the original
+source when retrieving answers. This is not possible when using local files.
 
 ### GitHub
 
@@ -147,7 +142,7 @@ Use `--source github` and file patterns to ingest from a GitHub repo:
 7d ingest --source github --repo reactjs/react.dev --files 'src/content/reference/react/*.md' --namespace react
 ```
 
-![Demo of ingest and query][22]
+![Demo of ingest and query][23]
 
 You can start without it, but once you start fetching lots of files you'll need to set `GITHUB_TOKEN`:
 
@@ -210,15 +205,15 @@ Clear a single namespace from the current Pinecone index:
 
 ## Token Usage
 
-The OpenAI recommendation [text-embedding-ada-002][23] model is used to create embeddings. Ingestion uses some tokens
-when ingesting lots of files. Queries use only a few tokens (using the [gpt-3.5-turbo][24] model by default). See the
+The OpenAI recommendation [text-embedding-ada-002][24] model is used to create embeddings. Ingestion uses some tokens
+when ingesting lots of files. Queries use only a few tokens (using the [gpt-3.5-turbo][25] model by default). See the
 console for details.
 
 ## Inspired by
 
-- [Paul Kinlan][25]
-- [OpenAI Cookbook][26]
-- [Polymath][27]
+- [Paul Kinlan][26]
+- [OpenAI Cookbook][27]
+- [Polymath][28]
 
 [1]: ./assets/ingest-and-query.gif
 [2]: https://7d-next.fly.dev
@@ -236,14 +231,15 @@ console for details.
 [14]: #pdf
 [15]: https://www.pinecone.io
 [16]: https://supabase.com
-[17]: #global
-[18]: https://platform.openai.com/account/api-keys
-[19]: ./assets/pinecone-create-index.gif
-[20]: https://supabase.com/docs/guides/database/extensions/pgvector
-[21]: https://app.supabase.com/projects
-[22]: ./assets/ingest-and-query-2.gif
-[23]: https://platform.openai.com/docs/guides/embeddings/what-are-embeddings
-[24]: https://platform.openai.com/docs/guides/chat
-[25]: https://github.com/PaulKinlan/paul.kinlan.me
-[26]: https://github.com/openai/openai-cookbook
-[27]: https://github.com/polymath-ai/polymath-ai
+[17]: https://github.com/7-docs
+[18]: #global
+[19]: https://platform.openai.com/account/api-keys
+[20]: ./assets/pinecone-create-index.gif
+[21]: https://supabase.com/docs/guides/database/extensions/pgvector
+[22]: https://app.supabase.com/projects
+[23]: ./assets/ingest-and-query-2.gif
+[24]: https://platform.openai.com/docs/guides/embeddings/what-are-embeddings
+[25]: https://platform.openai.com/docs/guides/chat
+[26]: https://github.com/PaulKinlan/paul.kinlan.me
+[27]: https://github.com/openai/openai-cookbook
+[28]: https://github.com/polymath-ai/polymath-ai
