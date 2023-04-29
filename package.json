@@ -1,6 +1,6 @@
 {
   "name": "7-docs",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Build a knowledge base and ask it questions through ChatGPT",
   "keywords": [
     "docs",
