@@ -9,7 +9,7 @@ import { query } from './command/query.js';
 import { createTable } from './command/supabase-create-table.js';
 import { set } from './util/storage.js';
 
-const main = async () => {
+export const main = async () => {
   try {
     const { command, source, db, repo, sourceIdentifiers, namespace, index, input, stream, isDryRun } =
       await parseConfig();
@@ -56,5 +56,3 @@ const main = async () => {
     throw error;
   }
 };
-
-await main();

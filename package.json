@@ -25,7 +25,7 @@
   },
   "type": "module",
   "bin": {
-    "7d": "./dist/cli.js"
+    "7d": "./index.js"
   },
   "files": [
     "dist"
@@ -38,7 +38,6 @@
     "build": "tsc --build",
     "format": "remark README.md -o",
     "knip": "knip",
-    "lint": "eslint src",
     "prepublishOnly": "npm run build",
     "release": "release-it",
     "watch": "tsc --build --watch"
@@ -49,25 +48,7 @@
     ]
   },
   "dependencies": {
-    "@7-docs/edge": "0.0.6",
-    "@7-docs/shared": "0.0.5",
-    "@octokit/rest": "^19.0.7",
-    "@supabase/supabase-js": "^2.21.0",
-    "cheerio": "^1.0.0-rc.12",
-    "dotenv": "^16.0.3",
-    "fast-glob": "^3.2.12",
-    "mdast-util-gfm": "^2.0.2",
-    "mdast-util-to-markdown": "^1.5.0",
-    "micromatch": "^4.0.5",
-    "ora": "^6.3.0",
-    "path2d-polyfill": "^2.0.1",
-    "pdfjs-dist": "^3.5.141",
-    "remark": "^14.0.2",
-    "remark-frontmatter": "^4.0.1",
-    "remark-gfm": "^3.0.1",
-    "remark-inline-links": "^6.0.1",
-    "unist-builder": "^3.0.1",
-    "yaml": "^2.2.2"
+    "@7-docs/cli": "0.0.13"
   },
   "devDependencies": {
     "@pinecone-database/pinecone": "^0.0.14",
@@ -79,6 +60,7 @@
     "eslint-import-resolver-exports": "^1.0.0-beta.5",
     "eslint-import-resolver-typescript": "^3.5.5",
     "eslint-plugin-import": "^2.27.5",
+    "fast-glob": "^3.2.12",
     "knip": "^2.10.2",
     "mdast": "^3.0.0",
     "release-it": "^15.10.1",

@@ -1,0 +1,53 @@
+{
+  "name": "@7-docs/cli",
+  "version": "0.0.13",
+  "description": "Command-line tool for 7-docs",
+  "homepage": "https://github.com/7-docs/7-docs",
+  "bugs": "https://github.com/7-docs/7-docs/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/7-docs/7-docs.git",
+    "directory": "packages/cli"
+  },
+  "license": "ISC",
+  "author": {
+    "name": "Lars Kappert",
+    "email": "lars@webpro.nl"
+  },
+  "type": "module",
+  "main": "index.js",
+  "bin": {
+    "7d": "./dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "format": "remark README.md -o",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "@7-docs/edge": "0.0.6",
+    "@7-docs/shared": "0.0.5",
+    "@octokit/rest": "^19.0.7",
+    "@supabase/supabase-js": "^2.21.0",
+    "cheerio": "^1.0.0-rc.12",
+    "dotenv": "^16.0.3",
+    "fast-glob": "^3.2.12",
+    "mdast-util-gfm": "^2.0.2",
+    "mdast-util-to-markdown": "^1.5.0",
+    "micromatch": "^4.0.5",
+    "ora": "^6.3.0",
+    "path2d-polyfill": "^2.0.1",
+    "pdfjs-dist": "^3.5.141",
+    "remark": "^14.0.2",
+    "remark-frontmatter": "^4.0.1",
+    "remark-gfm": "^3.0.1",
+    "remark-inline-links": "^6.0.1",
+    "unist-builder": "^3.0.1",
+    "yaml": "^2.2.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
