@@ -1,4 +1,4 @@
-import type { CreateChatCompletionRequest } from '@7-docs/shared';
+import type { CreateChatCompletionRequest } from 'openai';
 
 interface ChatCompletionsOptions {
   token: string;

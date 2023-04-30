@@ -1,5 +1,5 @@
 import type { ChatCompletionEventData, CompletionEventData, EventData, Params } from '@7-docs/shared';
-import type { CreateChatCompletionResponse } from '@7-docs/shared';
+import type { CreateChatCompletionResponse } from 'openai';
 
 export const getParams = async (req: Request): Promise<Params> => {
   const method = req.method;

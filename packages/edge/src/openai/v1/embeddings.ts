@@ -1,4 +1,4 @@
-import type { CreateEmbeddingResponse, CreateEmbeddingResponseDataInner } from '@7-docs/shared';
+import type { CreateEmbeddingResponse, CreateEmbeddingResponseDataInner } from 'openai';
 
 interface EmbeddingsOptions {
   token: string;

@@ -35,6 +35,10 @@
   "dependencies": {
     "@7-docs/shared": "0.0.5"
   },
+  "devDependencies": {
+    "@supabase/supabase-js": "^2.21.0",
+    "openai": "^3.2.1"
+  },
   "publishConfig": {
     "access": "public"
   }
