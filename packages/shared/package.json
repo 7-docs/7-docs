@@ -23,9 +23,14 @@
     "dist"
   ],
   "scripts": {
-    "lint": "eslint src"
+    "format": "remark README.md -o",
+    "lint": "eslint src",
+    "release": "release-it"
   },
   "publishConfig": {
     "access": "public"
+  },
+  "release-it": {
+    "git": false
   }
 }

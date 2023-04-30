@@ -31,7 +31,8 @@
   ],
   "scripts": {
     "format": "remark README.md -o",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "release": "release-it"
   },
   "dependencies": {
     "@7-docs/shared": "0.0.5"
@@ -42,5 +43,16 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "release-it": {
+    "git": false,
+    "plugins": {
+      "@release-it/bumper": {
+        "out": {
+          "file": "package.json",
+          "path": "dependencies.@7-docs/shared"
+        }
+      }
+    }
   }
 }

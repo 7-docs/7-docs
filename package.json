@@ -31,7 +31,9 @@
     "dist"
   ],
   "workspaces": [
-    "packages/*"
+    "packages/shared",
+    "packages/edge",
+    "packages/cli"
   ],
   "scripts": {
     "prebuild": "node ./rm-dist.js",
@@ -39,7 +41,7 @@
     "format": "remark README.md -o",
     "knip": "knip",
     "prepublishOnly": "npm run build",
-    "release": "release-it",
+    "release": "npm run release --workspaces && release-it",
     "watch": "tsc --build --watch"
   },
   "remarkConfig": {
@@ -52,6 +54,7 @@
   },
   "devDependencies": {
     "@pinecone-database/pinecone": "^0.0.14",
+    "@release-it/bumper": "^4.0.2",
     "@types/micromatch": "^4.0.2",
     "@types/node": "^18.16.2",
     "@typescript-eslint/eslint-plugin": "^5.59.1",
@@ -67,5 +70,20 @@
     "remark-cli": "^11.0.0",
     "remark-preset-webpro": "^0.0.2",
     "typescript": "^5.0.3"
+  },
+  "release-it": {
+    "git": {
+      "requireCleanWorkingDir": false
+    },
+    "plugins": {
+      "@release-it/bumper": {
+        "out": {
+          "file": "package.json",
+          "path": [
+            "dependencies.@7-docs/cli"
+          ]
+        }
+      }
+    }
   }
 }
