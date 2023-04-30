@@ -2,244 +2,38 @@
 
 Build a knowledge base and ask it questions through OpenAI APIs. Chat with your content!
 
-`7d` is a powerful tool to ingest text files and store them in a vector database, ready to get queried like you would
-with ChatGPT. Multiple sources can be combined into one namespace.
+7-docs is a powerful set of OpenAI-based tools and ingest content to store into a vector database, ready to get queried
+like you would with ChatGPT.
+
+- Use `@7-docs/cli` to ingest content from the command-line
+- Use `@7-docs/edge` for deploying functions to query the content (aka "chat completions")
 
 ## Impression
 
-### CLI
+### Ingest from CLI
 
 ![Demo of ingest and query][1]
 
-### Web GUI
+Use the `7d` CLI tool from [@7-docs/cli][2] to ingest content.
 
-A demo runs at [7d-next.fly.dev][2] (content ingested from the [react.dev][3] documentation). The source code is at
-[github.com/7-docs/demo-next][4].
+As shown in the example, you can also use `7d` to query the content from the CLI (just like chat completions).
 
-## Content
+### Query from UI
 
-- [Status][5]
-- [Prerequisites][6]
-- [Installation][7]
-- [Pinecone][8]
-- [Supabase][9]
-- [Ingestion][10]
-  - [Local][11]
-  - [GitHub][12]
-  - [HTTP][13]
-  - [PDF][14]
+Use [@7-docs/edge][3] to build your own functions for chat completions.
 
-## Status
-
-This is still in an early alpha phase. There is a command-line interface. Plain text, Markdown and PDF files are
-supported as input. OpenAI `text-embedding-ada-002` is used to create embeddings. [Pinecone][15] and [Supabase][16] are
-supported for vector storage. The OpenAI `gpt-3.5-turbo` model is used for chat completions.
-
-Also see the [7-docs overview][17] for an overview of packages and starterkits.
-
-## Prerequisites
-
-- Node.js v16+
-- OpenAI API key
-- Pinecone or Supabase account, plus API keys
-- When ingesting lots of files from GitHub, a GitHub token
-
-## Installation
-
-You can install 7-docs in two ways:
-
-- [Global][18] to manage knowledge base(s) from the command line.
-- [Local][11] to manage the knowledge base(s) of a repository.
-
-### Global
-
-Use `7d` from anywhere to manage your personal knowledge bases:
-
-```shell
-npm install --global 7-docs
-```
-
-Get an [OpenAI API key][19] and make it available as en environment variable:
-
-```shell
-export OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-```
-
-Alternative storage (in `~/.7d.json`) so it's available in your next session too:
-
-```shell
-7d set OPENAI_API_KEY sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-```
-
-This works for the other `export` values shown later as well.
-
-### Local
-
-Add `7d` to the `devDependencies` of a repository to manage its knowledge base(s):
-
-```shell
-npm install --save-dev 7-docs
-```
-
-Store the variables you need in a local `.env` file in the root of your project:
-
-```shell
-OPENAI_API_KEY="sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-```
-
-For local installations, use `npx 7d` (over just `7d`).
-
-Now let's choose either [Pinecone][8] or [Supabase][9]!
-
-## Pinecone
-
-Make sure to have a Pinecone account and set `PINECONE_URL` and `PINECONE_API_KEY`:
-
-```shell
-export PINECONE_URL=xxxxx-xxxxxxx.svc.us-xxxxx-gcp.pinecone.io
-export PINECONE_API_KEY=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-```
-
-Create or select an index:
-
-```shell
-7d pinecone-create-index --index my-index
-```
-
-![Demo of Pinecone index creation][20]
-
-## Supabase
-
-Make sure to have a Supabase account and set `SUPABASE_URL` and `SUPABASE_API_KEY`:
-
-```shell
-export SUPABASE_URL="https://xxxxxxxxxxxxxxxxxxxx.supabase.co"
-export SUPABASE_API_KEY="ey..."
-```
-
-Print the SQL query to enable [pgvector][21] and create a table (paste the output in the [Supabase web admin][22]):
-
-```shell
-7d supabase-create-table --namespace my-collection
-```
-
-## Ingestion
-
-Let's ingest some text or Markdown files, make sure to adjust the `--files` pattern to match yours:
-
-```shell
-7d ingest --files README.md --files 'docs/**/*.md' --namespace my-collection
-```
-
-Note that ingestion from remote resources ([GitHub][12] and/or [HTTP][13]) has the benefit to link back to the original
-source when retrieving answers. This is not possible when using local files.
-
-### GitHub
-
-Use `--source github` and file patterns to ingest from a GitHub repo:
-
-```shell
-7d ingest --source github --repo reactjs/react.dev --files 'src/content/reference/react/*.md' --namespace react
-```
-
-![Demo of ingest and query][23]
-
-You can start without it, but once you start fetching lots of files you'll need to set `GITHUB_TOKEN`:
-
-```shell
-export GITHUB_TOKEN="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-```
-
-### HTTP
-
-Crawl content from web pages:
-
-```shell
-7d ingest --source http --url https://en.wikipedia.org/wiki/Butterfly
-```
-
-### PDF
-
-`7d` supports PDF files as well:
-
-```shell
-7d ingest --files ./my-article.pdf
-7d ingest --source github --repo webpro/webpro.nl --files 'content/*.pdf'
-```
-
-## Query
-
-Now you can start asking questions about it:
-
-```shell
-7d Can you please give me a summary?
-```
-
-## Other commands
-
-Other convenience flags and commands not mentioned yet.
-
-### `--help`
-
-Shows available commands and how they can be used:
-
-```shell
-7d --help
-```
-
-### `openai-list-models`
-
-List available OpenAI models:
-
-```shell
-7d openai-list-models
-```
-
-### `pinecone-clear-namespace`
-
-Clear a single namespace from the current Pinecone index:
-
-```shell
-7d pinecone-clear-namespace --namespace my-collection
-```
-
-## Token Usage
-
-The OpenAI recommendation [text-embedding-ada-002][24] model is used to create embeddings. Ingestion uses some tokens
-when ingesting lots of files. Queries use only a few tokens (using the [gpt-3.5-turbo][25] model by default). See the
-console for details.
+See the [7-docs organization page][4] for demos and starter kits.
 
 ## Inspired by
 
-- [Paul Kinlan][26]
-- [OpenAI Cookbook][27]
-- [Polymath][28]
+- [Paul Kinlan][5]
+- [OpenAI Cookbook][6]
+- [Polymath][7]
 
 [1]: ./assets/ingest-and-query.gif
-[2]: https://7d-next.fly.dev
-[3]: https://react.dev
-[4]: https://github.com/7-docs/demo-react
-[5]: #status
-[6]: #prerequisites
-[7]: #installation
-[8]: #pinecone
-[9]: #supabase
-[10]: #ingestion
-[11]: #local
-[12]: #github
-[13]: #http
-[14]: #pdf
-[15]: https://www.pinecone.io
-[16]: https://supabase.com
-[17]: https://github.com/7-docs
-[18]: #global
-[19]: https://platform.openai.com/account/api-keys
-[20]: ./assets/pinecone-create-index.gif
-[21]: https://supabase.com/docs/guides/database/extensions/pgvector
-[22]: https://app.supabase.com/projects
-[23]: ./assets/ingest-and-query-2.gif
-[24]: https://platform.openai.com/docs/guides/embeddings/what-are-embeddings
-[25]: https://platform.openai.com/docs/guides/chat
-[26]: https://github.com/PaulKinlan/paul.kinlan.me
-[27]: https://github.com/openai/openai-cookbook
-[28]: https://github.com/polymath-ai/polymath-ai
+[2]: https://github.com/7-docs/7-docs/blob/main/packages/cli/README.md
+[3]: https://github.com/7-docs/7-docs/blob/main/packages/edge/README.md
+[4]: https://github.com/7-docs
+[5]: https://github.com/PaulKinlan/paul.kinlan.me
+[6]: https://github.com/openai/openai-cookbook
+[7]: https://github.com/polymath-ai/polymath-ai

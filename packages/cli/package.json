@@ -1,7 +1,23 @@
 {
   "name": "@7-docs/cli",
   "version": "0.0.13",
-  "description": "Command-line tool for 7-docs",
+  "description": "Command-line tool for 7-docs to ingest content",
+  "keywords": [
+    "cli",
+    "content",
+    "docs",
+    "documentation",
+    "ingest",
+    "kb",
+    "markdown",
+    "vector",
+    "database",
+    "embedding",
+    "chatgpt",
+    "openai",
+    "pinecone",
+    "supabase"
+  ],
   "homepage": "https://github.com/7-docs/7-docs",
   "bugs": "https://github.com/7-docs/7-docs/issues",
   "repository": {

@@ -1,7 +1,7 @@
 {
   "name": "@7-docs/edge",
   "version": "0.0.6",
-  "description": "Package to use 7-docs from edge functions",
+  "description": "Dependency-free package for 7-docs to query your content from anywhere JavaScript can run",
   "homepage": "https://github.com/7-docs/7-docs",
   "bugs": "https://github.com/7-docs/7-docs/issues",
   "repository": {
@@ -15,8 +15,6 @@
     "email": "lars@webpro.nl"
   },
   "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -26,10 +24,13 @@
     "./pinecone": "./dist/pinecone/index.js",
     "./supabase": "./dist/supabase/index.js"
   },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
+    "format": "remark README.md -o",
     "lint": "eslint src"
   },
   "dependencies": {
