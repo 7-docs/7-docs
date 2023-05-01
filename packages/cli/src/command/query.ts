@@ -1,4 +1,4 @@
-import { OpenAI } from '@7-docs/edge/openai';
+import { OpenAI } from '@7-docs/edge';
 import { OPENAI_EMBEDDING_MODEL } from '@7-docs/shared';
 import { getPrompt } from '@7-docs/shared';
 import { Pinecone } from '../client/pinecone.js';
@@ -8,7 +8,7 @@ import { uniqueByProperty } from '../util/array.js';
 import ora from '../util/ora.js';
 import { writeToStdOut } from '../util/stream.js';
 import { addTokens, getInitUsage } from '../util/usage.js';
-import type { ChatCompletionRequestMessage } from '@7-docs/shared';
+import type { ChatCompletionRequestMessage } from 'openai';
 
 const targets = {
   Pinecone,

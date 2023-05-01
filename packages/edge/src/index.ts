@@ -14,6 +14,8 @@ export type {
   Usage
 } from '@7-docs/shared';
 
+export { OpenAI } from './openai/index.js';
+
 export * as pinecone from './pinecone/index.js';
 
 export * as supabase from './supabase/index.js';
