@@ -1,10 +1,10 @@
 # @7-docs/edge
 
-Query your content from anywhere JavaScript can run.
+Query your content from anywhere JavaScript runs.
 
 After ingesting content using [@7-docs/cli][1], request "chat completions" using `@7-docs/edge`.
 
-No dependencies, requires only `fetch()`.
+No dependencies, uses `fetch()`.
 
 ## Usage
 

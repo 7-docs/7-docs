@@ -31,7 +31,7 @@
     "email": "lars@webpro.nl"
   },
   "type": "module",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "bin": {
     "7d": "./dist/cli.js"
   },
