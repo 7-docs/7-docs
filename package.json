@@ -1,6 +1,6 @@
 {
   "name": "7-docs",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Build a knowledge base and ask it questions through ChatGPT",
   "keywords": [
     "docs",
@@ -50,7 +50,7 @@
     ]
   },
   "dependencies": {
-    "@7-docs/cli": "0.1.1"
+    "@7-docs/cli": "0.1.2"
   },
   "devDependencies": {
     "@pinecone-database/pinecone": "^0.0.14",
