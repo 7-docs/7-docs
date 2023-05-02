@@ -24,13 +24,6 @@ query
   --namespace [name]      Namespace to query
   --no-stream             Don't stream the response
 
-Additional helper commands:
-  set
-  pinecone-create-index
-  pinecone-clear-namespace
-  supabase-create-table
-  openai-list-models
-
 set
   [name] [value]          Store name with value (alternative to exporting environment variables)
 
@@ -45,30 +38,16 @@ supabase-create-table
 
 openai-list-models        Show list of available OpenAI models
 
+Example using a GitHub repo and Pinecone:
 
-Examples:
-
-> Using Pinecone
-
-$ 7d pinecone-create-index --index my-index
-$ 7d ingest --files '*.md' --namespace my-namespace
-$ 7d Can you give a summary?
-
-> Using Supabase
-
-$ 7d supabase-create-table --namespace knip
-$ 7d ingest --files README.md --files 'docs/**/*.md' --namespace my-namespace
-$ 7d Can you give an introduction?
-
-> Using a GitHub repo
-
-$ 7d pinecone-create-index --index knip
+$ 7d pinecone-create-index --index react
 $ 7d ingest --source github --repo reactjs/react.dev --files 'src/content/reference/react/*.md' --namespace react
 $ 7d What is Suspense?
 
 Use --db and/or --namespace to be explicit, and to switch db or namespace. Omit to keep using the latest provided.
 
-More documentation and bug reports: https://github.com/webpro/7-docs`;
+More documentation: https://www.npmjs.com/package/@7-docs/cli
+Bug reports: https://github.com/7-docs/7-docs`;
 
 export const parseConfig = async () => {
   const parsedArgs = parseArgs({
