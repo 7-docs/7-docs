@@ -1,4 +1,4 @@
-import { OpenAI } from '@7-docs/edge/openai';
+import { OpenAI } from '@7-docs/edge';
 import { OPENAI_API_KEY } from '../env.js';
 
 export const openaiListModels = async () => {

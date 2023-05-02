@@ -1,4 +1,4 @@
-import { OpenAI } from '@7-docs/edge/openai';
+import { OpenAI } from '@7-docs/edge';
 import { CHUNK_SIZE, OPENAI_EMBEDDING_MODEL } from '@7-docs/shared';
 import { Pinecone } from '../client/pinecone.js';
 import { Supabase } from '../client/supabase.js';

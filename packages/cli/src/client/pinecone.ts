@@ -1,4 +1,4 @@
-import { listIndexes, createIndex, upsert, deleteVector, query } from '@7-docs/edge/pinecone';
+import { pinecone } from '@7-docs/edge';
 import {
   PINECONE_UPSERT_VECTOR_LIMIT,
   OPENAI_OUTPUT_DIMENSIONS,
@@ -26,7 +26,7 @@ export class Pinecone implements VectorDatabase {
 
     set('db', 'type', 'pinecone');
 
-    const indices = await listIndexes({ url: this.url, token: this.token });
+    const indices = await pinecone.listIndexes({ url: this.url, token: this.token });
 
     if (!indices.includes(name)) {
       const body = {
@@ -36,7 +36,7 @@ export class Pinecone implements VectorDatabase {
         podType: PINECONE_POD_TYPE
       };
 
-      await createIndex({ url: this.url, token: this.token, body });
+      await pinecone.createIndex({ url: this.url, token: this.token, body });
 
       return [
         `Created new index: ${name} (${OPENAI_OUTPUT_DIMENSIONS}/${PINECONE_METRIC}/${PINECONE_POD_TYPE})`,
@@ -49,7 +49,7 @@ export class Pinecone implements VectorDatabase {
     let v = 0;
     await forEachChunkedAsync(vectors, PINECONE_UPSERT_VECTOR_LIMIT, async vectors => {
       const body = { vectors, namespace };
-      const response = await upsert({ url: this.url, token: this.token, body });
+      const response = await pinecone.upsert({ url: this.url, token: this.token, body });
       if (response.upsertedCount !== vectors.length) console.warn('Pinecone response did not match request:', response);
       v += vectors.length;
     });
@@ -57,11 +57,11 @@ export class Pinecone implements VectorDatabase {
   }
 
   async query({ embedding, namespace }: QueryOptions) {
-    return query({ url: this.url, token: this.token, vector: embedding, namespace });
+    return pinecone.query({ url: this.url, token: this.token, vector: embedding, namespace });
   }
 
   async clearNamespace(namespace: string) {
     const body = { deleteAll: true, namespace };
-    await deleteVector({ url: this.url, token: this.token, body });
+    await pinecone.deleteVector({ url: this.url, token: this.token, body });
   }
 }
