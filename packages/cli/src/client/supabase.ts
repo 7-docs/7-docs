@@ -1,12 +1,9 @@
-import { EMBEDDING_MATCH_COUNT, SUPABASE_SIMILARITY_THRESHOLD } from '@7-docs/shared';
+import { supabase } from '@7-docs/edge';
 import { normalizeNamespace } from '@7-docs/shared';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { SUPABASE_URL, SUPABASE_API_KEY } from '../env.js';
 import type { VectorDatabase, UpsertVectorOptions, QueryOptions } from '../types.js';
 import type { MetaData } from '@7-docs/shared';
-
-type Result = { id: string; metadata: string; similarity: number };
-type Results = undefined | Result[];
 
 export class Supabase implements VectorDatabase {
   client: SupabaseClient;
@@ -26,13 +23,6 @@ export class Supabase implements VectorDatabase {
   }
 
   async query({ embedding, namespace }: QueryOptions): Promise<MetaData[]> {
-    const ns = normalizeNamespace(namespace);
-    const { error, data } = await this.client.rpc(`match_${ns}`, {
-      query_embedding: embedding,
-      similarity_threshold: SUPABASE_SIMILARITY_THRESHOLD,
-      match_count: EMBEDDING_MATCH_COUNT
-    });
-    if (error instanceof Error) throw error;
-    return (data as Results)?.map(d => JSON.parse(d.metadata)) ?? [];
+    return supabase.query({ client: this.client, namespace, vector: embedding });
   }
 }
