@@ -41,7 +41,7 @@ export const ingest = async ({ source, sourceIdentifiers, repo, db, namespace, i
   spinner.succeed();
 
   if (files.length > 0) {
-    const spinner = ora('Creating and upserting vectors').start();
+    const spinner = ora('Creating and upserting vector embeddings').start();
 
     const DB = new targets[db]();
 
@@ -57,7 +57,7 @@ export const ingest = async ({ source, sourceIdentifiers, repo, db, namespace, i
 
         if (!content) continue;
 
-        spinner.text = `Creating and upserting embedding for: ${filePath}`;
+        spinner.text = `Creating and upserting vector embedding for: ${filePath}`;
 
         const { title, sections } = await parseDocument(filePath, content, CHUNK_SIZE);
 

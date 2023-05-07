@@ -30,7 +30,7 @@ export const query = async ({ db, namespace, query, stream }: Options) => {
     usage: getInitUsage()
   };
 
-  const spinner = ora(`Creating query embedding`).start();
+  const spinner = ora(`Creating vector embedding from query`).start();
 
   try {
     const client = new OpenAI(OPENAI_API_KEY);
