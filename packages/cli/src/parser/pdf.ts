@@ -1,10 +1,10 @@
 import 'path2d-polyfill';
-import pdf from 'pdfjs-dist/legacy/build/pdf.js';
 import { parser as textParser } from './text.js';
 import type { AsyncDocumentParser } from '../types.js';
 import type { TextItem } from 'pdfjs-dist/types/src/display/api.js';
 
 export const parser: AsyncDocumentParser = async (content, maxLength) => {
+  const { default: pdf } = await import('pdfjs-dist/legacy/build/pdf.js');
   const data = Buffer.isBuffer(content) ? new Uint8Array(content) : content;
   const loadingTask = pdf.getDocument(data);
   const pdfDocument = await loadingTask.promise;

@@ -172,6 +172,8 @@ Crawl content from web pages:
 7d ingest --source github --repo webpro/webpro.nl --files 'content/*.pdf'
 ```
 
+When you see the `cannot find module "canvas"` error, please see [node-canvas#compiling][22].
+
 ## Query
 
 Now you can start asking questions about it:
@@ -210,8 +212,8 @@ Clear a single namespace from the current Pinecone index:
 
 ## Token Usage
 
-The OpenAI recommendation [text-embedding-ada-002][22] model is used to create embeddings. Ingestion uses some tokens
-when ingesting lots of files. Queries use only a few tokens (using the [gpt-3.5-turbo][23] model by default). See the
+The OpenAI recommendation [text-embedding-ada-002][23] model is used to create embeddings. Ingestion uses some tokens
+when ingesting lots of files. Queries use only a few tokens (using the [gpt-3.5-turbo][24] model by default). See the
 console for details.
 
 [1]: https://github.com/7-docs
@@ -235,5 +237,6 @@ console for details.
 [19]: https://supabase.com/docs/guides/database/extensions/pgvector
 [20]: https://app.supabase.com/projects
 [21]: ./assets/ingest-and-query-2.gif
-[22]: https://platform.openai.com/docs/guides/embeddings/what-are-embeddings
-[23]: https://platform.openai.com/docs/guides/chat
+[22]: https://github.com/Automattic/node-canvas#compiling
+[23]: https://platform.openai.com/docs/guides/embeddings/what-are-embeddings
+[24]: https://platform.openai.com/docs/guides/chat

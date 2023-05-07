@@ -57,7 +57,7 @@
     "micromatch": "^4.0.5",
     "ora": "^6.3.0",
     "path2d-polyfill": "^2.0.1",
-    "pdfjs-dist": "^3.5.141",
+    "pdfjs-dist": "^3.6.172",
     "remark": "^14.0.2",
     "remark-frontmatter": "^4.0.1",
     "remark-gfm": "^3.0.1",
