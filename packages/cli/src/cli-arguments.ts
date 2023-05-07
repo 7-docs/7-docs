@@ -2,6 +2,8 @@ import { parseArgs } from 'node:util';
 import { ucFirst } from '@7-docs/shared';
 import { getOrSet } from './util/storage.js';
 
+const nodeMajor = parseInt(process.version.split('.')[0].slice(1), 10);
+
 const helpText = `Tool to query content based on local files or GitHub repositories.
 
 Usage: 7h [command] [options]
@@ -97,7 +99,7 @@ export const parseConfig = async () => {
     environment,
     namespace,
     input,
-    stream: !parsedArgs.values['no-stream'],
+    stream: !parsedArgs.values['no-stream'] && nodeMajor >= 18,
     isDryRun: !!parsedArgs.values['dry-run']
   };
 };
