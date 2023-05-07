@@ -9,6 +9,7 @@ import { PINECONE_URL, PINECONE_API_KEY } from '../env.js';
 import { forEachChunkedAsync } from '../util/array.js';
 import { set } from '../util/storage.js';
 import type { UpsertVectorOptions, VectorDatabase, QueryOptions } from '../types.js';
+import type { MetaData } from '@7-docs/shared';
 
 const getEnvironmentFromUrl = (url: string) => {
   const m = url.match(/(?<=svc\.)([a-z0-9-]+)(?=\.pinecone)/);
@@ -67,7 +68,7 @@ export class Pinecone implements VectorDatabase {
     return v;
   }
 
-  async query({ embedding, namespace }: QueryOptions) {
+  async query({ embedding, namespace }: QueryOptions): Promise<MetaData[]> {
     if (!this.url) throw new Error('Missing PINECONE_URL environment variable');
     return pinecone.query({ url: this.url, token: this.token, vector: embedding, namespace });
   }
