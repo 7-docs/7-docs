@@ -28,7 +28,8 @@ set
   [name] [value]          Store name with value (alternative to exporting environment variables)
 
 pinecone-create-index
-  --index [name]          Create or set index
+  --index [name]          Name for the index
+  --environment [name]    Environment (e.g. "us-east4-gcp")
 
 pinecone-clear-namespace
   --namespace [name]      Clear namespace
@@ -40,7 +41,7 @@ openai-list-models        Show list of available OpenAI models
 
 Example using a GitHub repo and Pinecone:
 
-$ 7d pinecone-create-index --index react
+$ 7d pinecone-create-index --environment us-east4-gcp --index react
 $ 7d ingest --source github --repo reactjs/react.dev --files 'src/content/reference/react/*.md' --namespace react
 $ 7d What is Suspense?
 
@@ -61,6 +62,7 @@ export const parseConfig = async () => {
       url: { type: 'string', multiple: true },
       repo: { type: 'string' },
       index: { type: 'string' },
+      environment: { type: 'string' },
       namespace: { type: 'string' },
       db: { type: 'string' },
       'no-stream': { type: 'boolean', default: false },
@@ -81,6 +83,7 @@ export const parseConfig = async () => {
   const db = getOrSet('db', 'type', parsedArgs.values['db'], 'pinecone');
   const namespace = getOrSet(db, 'namespace', parsedArgs.values['namespace'], '');
   const index = parsedArgs.values['index'];
+  const environment = parsedArgs.values['environment'];
   const repo = getOrSet('github', 'repo', parsedArgs.values['repo']);
 
   return {
@@ -91,6 +94,7 @@ export const parseConfig = async () => {
     repo,
     db: ucFirst(db),
     index,
+    environment,
     namespace,
     input,
     stream: !parsedArgs.values['no-stream'],

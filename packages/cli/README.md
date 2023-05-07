@@ -92,20 +92,26 @@ Now let's choose either [Pinecone][6] or [Supabase][7]!
 
 ## Pinecone
 
-Make sure to have a Pinecone account and set `PINECONE_URL` and `PINECONE_API_KEY`:
+Make sure to have a Pinecone account and set `PINECONE_API_KEY`:
 
 ```shell
-export PINECONE_URL=xxxxx-xxxxxxx.svc.us-xxxxx-gcp.pinecone.io
 export PINECONE_API_KEY=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 ```
 
 Create or select an index:
 
 ```shell
-7d pinecone-create-index --index my-index
+7d pinecone-create-index --index my-index --environment us-east4-gcp
 ```
 
 ![Demo of Pinecone index creation][17]
+
+Keep working with this index by setting the `PINECONE_URL` from the [Pinecone Console][18] like so:
+
+```shell
+export PINECONE_URL=xxxxx-xxxxxxx.svc.us-xxxxx-gcp.pinecone.io
+export PINECONE_API_KEY=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+```
 
 ## Supabase
 
@@ -116,7 +122,7 @@ export SUPABASE_URL="https://xxxxxxxxxxxxxxxxxxxx.supabase.co"
 export SUPABASE_API_KEY="ey..."
 ```
 
-Print the SQL query to enable [pgvector][18] and create a table (paste the output in the [Supabase web admin][19]):
+Print the SQL query to enable [pgvector][19] and create a table (paste the output in the [Supabase web admin][20]):
 
 ```shell
 7d supabase-create-table --namespace my-collection
@@ -141,7 +147,7 @@ Use `--source github` and file patterns to ingest from a GitHub repo:
 7d ingest --source github --repo reactjs/react.dev --files 'src/content/reference/react/*.md' --namespace react
 ```
 
-![Demo of ingest and query][20]
+![Demo of ingest and query][21]
 
 You can start without it, but once you start fetching lots of files you'll need to set `GITHUB_TOKEN`:
 
@@ -204,8 +210,8 @@ Clear a single namespace from the current Pinecone index:
 
 ## Token Usage
 
-The OpenAI recommendation [text-embedding-ada-002][21] model is used to create embeddings. Ingestion uses some tokens
-when ingesting lots of files. Queries use only a few tokens (using the [gpt-3.5-turbo][22] model by default). See the
+The OpenAI recommendation [text-embedding-ada-002][22] model is used to create embeddings. Ingestion uses some tokens
+when ingesting lots of files. Queries use only a few tokens (using the [gpt-3.5-turbo][23] model by default). See the
 console for details.
 
 [1]: https://github.com/7-docs
@@ -225,8 +231,9 @@ console for details.
 [15]: #global
 [16]: https://platform.openai.com/account/api-keys
 [17]: ./assets/pinecone-create-index.gif
-[18]: https://supabase.com/docs/guides/database/extensions/pgvector
-[19]: https://app.supabase.com/projects
-[20]: ./assets/ingest-and-query-2.gif
-[21]: https://platform.openai.com/docs/guides/embeddings/what-are-embeddings
-[22]: https://platform.openai.com/docs/guides/chat
+[18]: https://app.pinecone.io
+[19]: https://supabase.com/docs/guides/database/extensions/pgvector
+[20]: https://app.supabase.com/projects
+[21]: ./assets/ingest-and-query-2.gif
+[22]: https://platform.openai.com/docs/guides/embeddings/what-are-embeddings
+[23]: https://platform.openai.com/docs/guides/chat

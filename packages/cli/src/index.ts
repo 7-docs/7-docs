@@ -11,12 +11,12 @@ import { set } from './util/storage.js';
 
 export const main = async () => {
   try {
-    const { command, source, db, repo, sourceIdentifiers, namespace, index, input, stream, isDryRun } =
+    const { command, source, db, repo, sourceIdentifiers, namespace, index, environment, input, stream, isDryRun } =
       await parseConfig();
 
     switch (command) {
       case 'pinecone-create-index': {
-        await pineconeCreateIndex(index);
+        await pineconeCreateIndex(index, environment);
         break;
       }
       case 'pinecone-clear-namespace': {
