@@ -1,13 +1,12 @@
 import * as fs from './fs.js';
 import * as github from './github.js';
 import * as http from './http.js';
-import type { FetchFiles } from '../types.js';
 
-export const sources: Record<string, { fetchFiles: FetchFiles }> = {
+export const sources = {
   fs,
   github,
   http
-};
+} as const;
 
 export const fetchDocuments = async (
   source: keyof typeof sources,

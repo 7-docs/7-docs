@@ -16,7 +16,7 @@ const targets = {
 };
 
 type Options = {
-  source?: keyof typeof sources;
+  source?: string;
   sourceIdentifiers: string[];
   repo: string;
   db?: string;
@@ -24,9 +24,12 @@ type Options = {
   isDryRun: boolean;
 };
 
+const isValidSource = (source?: string): source is keyof typeof sources => Boolean(source && source in sources);
+const isValidTarget = (target?: string): target is keyof typeof targets => Boolean(target && target in targets);
+
 export const ingest = async ({ source, sourceIdentifiers, repo, db, namespace, isDryRun }: Options) => {
-  if (!source || !(source in sources)) throw new Error(`Invalid --source: ${source}`);
-  if (!db || !(db in targets)) throw new Error(`Invalid --db: ${db}`);
+  if (!isValidSource(source)) throw new Error(`Invalid --source: ${source}`);
+  if (!isValidTarget(db)) throw new Error(`Invalid --db: ${db}`);
   if (source === 'github' && !repo) throw new Error('No --repo provided');
 
   const client = new OpenAI(OPENAI_API_KEY);
@@ -40,7 +43,7 @@ export const ingest = async ({ source, sourceIdentifiers, repo, db, namespace, i
   if (files.length > 0) {
     const spinner = ora('Creating and upserting vectors').start();
 
-    const DB = new targets[db as keyof typeof targets]();
+    const DB = new targets[db]();
 
     const counters = {
       files: files.length,
