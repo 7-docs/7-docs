@@ -81,5 +81,8 @@
         }
       }
     }
+  },
+  "devDependencies": {
+    "openai": "^3.2.1"
   }
 }
