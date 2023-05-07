@@ -93,5 +93,7 @@ export const ingest = async ({ source, sourceIdentifiers, repo, db, namespace, i
       ];
       ora(messages.join(', ')).info();
     }
+  } else {
+    throw new Error(`Unable to find files to ingest (source: ${source}, patterns: ${sourceIdentifiers.join(',')})`);
   }
 };
