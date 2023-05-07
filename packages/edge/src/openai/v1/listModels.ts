@@ -17,5 +17,5 @@ export const listModels = async ({ token }: ListModelsOptions): Promise<ListMode
 
   if (error) throw new Error(error.message);
 
-  return data.data;
+  return data;
 };
