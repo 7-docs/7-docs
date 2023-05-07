@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import 'isomorphic-unfetch';
 import { parseConfig } from './cli-arguments.js';
 import { ingest } from './command/ingest.js';
 import { openaiListModels } from './command/openai-list-models.js';
