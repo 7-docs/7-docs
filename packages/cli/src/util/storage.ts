@@ -13,17 +13,17 @@ try {
   // Intentionally ignore
 }
 
-export const get = (db: string, key: string) => config?.[db]?.[key];
+export const get = (section: string, key: string) => config?.[section]?.[key];
 
-export const set = (db: string, key: string, value: string) => {
+export const set = (section: string, key: string, value: string) => {
   if (!config) config = {};
-  if (!config[db]) config[db] = {};
-  config[db][key] = value;
+  if (!config[section]) config[section] = {};
+  config[section][key] = value;
   fs.writeFileSync(filePath, JSON.stringify(config));
   return value;
 };
 
-export const getOrSet = (db: string, key: string, value?: string, fallback?: string) => {
-  if (value) return set(db, key, value);
-  return get(db, key) ?? fallback;
+export const getOrSet = (section: string, key: string, value?: string, fallback?: string) => {
+  if (value) return set(section, key, value);
+  return get(section, key) ?? fallback;
 };

@@ -5,7 +5,7 @@ dotenv.config();
 
 export const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? get('env', 'OPENAI_API_KEY');
 
-export const PINECONE_URL = process.env.PINECONE_URL;
+export const PINECONE_URL = process.env.PINECONE_URL ?? get('env', 'PINECONE_URL');
 export const PINECONE_API_KEY = process.env.PINECONE_API_KEY ?? get('env', 'PINECONE_API_KEY');
 
 export const SUPABASE_URL = process.env.SUPABASE_URL ?? get('env', 'SUPABASE_URL');
