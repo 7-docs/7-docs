@@ -38,6 +38,7 @@
     "@7-docs/shared": "0.1.5"
   },
   "devDependencies": {
+    "@pinecone-database/pinecone": "^0.0.14",
     "@supabase/supabase-js": "^2.21.0",
     "openai": "^3.2.1"
   },

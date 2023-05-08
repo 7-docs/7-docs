@@ -83,6 +83,8 @@
     }
   },
   "devDependencies": {
+    "@types/micromatch": "^4.0.2",
+    "mdast": "^3.0.0",
     "openai": "^3.2.1"
   }
 }
