@@ -101,10 +101,10 @@ export PINECONE_API_KEY=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 Create or select an index:
 
 ```shell
-7d pinecone-create-index --index my-index --environment us-east4-gcp
+7d pinecone-create-index --index [name] --environment [env]
 ```
 
-![Demo of Pinecone index creation][17]
+Find the environment in your [Pinecone Console][18] (e.g. `us-east4-gcp`).
 
 Keep working with this index by setting the `PINECONE_URL` from the [Pinecone Console][18] like so:
 
@@ -232,7 +232,6 @@ console for details.
 [14]: https://supabase.com
 [15]: #global
 [16]: https://platform.openai.com/account/api-keys
-[17]: ./assets/pinecone-create-index.gif
 [18]: https://app.pinecone.io
 [19]: https://supabase.com/docs/guides/database/extensions/pgvector
 [20]: https://app.supabase.com/projects
