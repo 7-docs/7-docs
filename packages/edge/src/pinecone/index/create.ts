@@ -16,6 +16,7 @@ export const createIndex: CreateIndex = async ({ environment, token, body }) => 
 
   if (!response.ok) {
     const text = await response.text();
-    throw new Error(text ?? `Unable to create new index (${response.status} ${response.statusText})`);
+    const message = `${response.status} ${response.statusText}: ${text ?? `Unable to create new index`})`;
+    throw new Error(message);
   }
 };

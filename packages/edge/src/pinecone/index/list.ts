@@ -12,5 +12,11 @@ export const listIndexes: ListIndexes = async ({ environment, token }) => {
     method: 'GET'
   });
 
+  if (!response.ok) {
+    const text = await response.text();
+    const message = `${response.status} ${response.statusText}: ${text ?? `Unable to list indexes`})`;
+    throw new Error(message);
+  }
+
   return response.json();
 };

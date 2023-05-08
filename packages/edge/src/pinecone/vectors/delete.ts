@@ -15,7 +15,8 @@ export const deleteVector: Delete = async ({ url, token, body }) => {
   });
 
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message ?? `Unable to delete (${response.status} ${response.statusText})`);
+    const text = await response.text();
+    const message = `${response.status} ${response.statusText}: ${text ?? `Unable to delete vectors`})`;
+    throw new Error(message);
   }
 };

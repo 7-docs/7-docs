@@ -15,5 +15,11 @@ export const upsert: Upsert = async ({ url, token, body }) => {
     body: JSON.stringify(body)
   });
 
+  if (!response.ok) {
+    const text = await response.text();
+    const message = `${response.status} ${response.statusText}: ${text ?? `Unable to upsert vectors`})`;
+    throw new Error(message);
+  }
+
   return response.json();
 };
