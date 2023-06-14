@@ -1,5 +1,5 @@
 import { OpenAI } from '@7-docs/edge';
-import { OPENAI_EMBEDDING_MODEL } from '@7-docs/shared';
+import { OPENAI_COMPLETION_MODEL, OPENAI_EMBEDDING_MODEL } from '@7-docs/shared';
 import { getPrompt } from '@7-docs/shared';
 import { Pinecone } from '../client/pinecone.js';
 import { Supabase } from '../client/supabase.js';
@@ -61,7 +61,7 @@ export const query = async ({ db, namespace, query, stream }: Options) => {
 
         spinner.text = `Requesting OpenAI chat completion`;
 
-        const body = { model: 'gpt-3.5-turbo', messages, stream };
+        const body = { model: OPENAI_COMPLETION_MODEL, messages, stream };
         const response = await client.chatCompletions(body);
 
         if (stream) {
