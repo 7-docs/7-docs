@@ -15,15 +15,6 @@
     "email": "lars@webpro.nl"
   },
   "type": "module",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    },
-    "./openai": "./dist/openai/index.js",
-    "./pinecone": "./dist/pinecone/index.js",
-    "./supabase": "./dist/supabase/index.js"
-  },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
