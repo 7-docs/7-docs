@@ -28,7 +28,7 @@ const query = (vector: number[]) =>
     url: PINECONE_URL,
     token: PINECONE_API_KEY,
     vector,
-    namespace,
+    namespace
   });
 
 const handler = getCompletionHandler({ OPENAI_API_KEY, query, system, prompt });
