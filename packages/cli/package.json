@@ -43,6 +43,11 @@
     "lint": "eslint src",
     "release": "release-it"
   },
+  "remarkConfig": {
+    "plugins": [
+      "preset-webpro"
+    ]
+  },
   "dependencies": {
     "@7-docs/edge": "0.1.8",
     "@7-docs/shared": "0.1.8",
@@ -65,6 +70,11 @@
     "unist-builder": "^3.0.1",
     "yaml": "^2.2.2"
   },
+  "devDependencies": {
+    "@types/micromatch": "^4.0.2",
+    "mdast": "^3.0.0",
+    "openai": "^3.2.1"
+  },
   "publishConfig": {
     "access": "public"
   },
@@ -81,10 +91,5 @@
         }
       }
     }
-  },
-  "devDependencies": {
-    "@types/micromatch": "^4.0.2",
-    "mdast": "^3.0.0",
-    "openai": "^3.2.1"
   }
 }

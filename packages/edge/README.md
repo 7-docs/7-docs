@@ -64,11 +64,11 @@ export default function (req: Request) {
 
 ## Edge + UI example using (P)react
 
-See [github.com/7-docs/demo-react][2] for a full example.
+See [github.com/7-docs][1] for more examples, starter kits, etc.
 
 ## CLI
 
-To query the content from the CLI, use [@7-docs/cli][1].
+To query the content from the CLI, use [@7-docs/cli][2].
 
-[1]: https://github.com/7-docs/7-docs/blob/main/packages/cli/README.md
-[2]: https://github.com/7-docs/demo-react
+[1]: https://github.com/7-docs
+[2]: https://github.com/7-docs/7-docs/blob/main/packages/cli/README.md

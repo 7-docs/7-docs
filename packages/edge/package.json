@@ -25,6 +25,11 @@
     "lint": "eslint src",
     "release": "release-it"
   },
+  "remarkConfig": {
+    "plugins": [
+      "preset-webpro"
+    ]
+  },
   "dependencies": {
     "@7-docs/shared": "0.1.8"
   },

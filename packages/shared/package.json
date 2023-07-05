@@ -15,11 +15,11 @@
     "email": "lars@webpro.nl"
   },
   "type": "module",
-  "types": "./dist/index.d.ts",
   "exports": {
     "types": "./dist/index.d.ts",
     "import": "./dist/index.js"
   },
+  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
@@ -27,6 +27,11 @@
     "format": "remark README.md -o",
     "lint": "eslint src",
     "release": "release-it"
+  },
+  "remarkConfig": {
+    "plugins": [
+      "preset-webpro"
+    ]
   },
   "publishConfig": {
     "access": "public"
