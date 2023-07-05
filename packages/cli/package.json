@@ -1,6 +1,6 @@
 {
   "name": "@7-docs/cli",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Command-line tool for 7-docs to ingest content",
   "keywords": [
     "cli",
@@ -44,8 +44,8 @@
     "release": "release-it"
   },
   "dependencies": {
-    "@7-docs/edge": "0.1.7",
-    "@7-docs/shared": "0.1.7",
+    "@7-docs/edge": "0.1.8",
+    "@7-docs/shared": "0.1.8",
     "@octokit/rest": "^19.0.7",
     "@supabase/supabase-js": "^2.21.0",
     "cheerio": "^1.0.0-rc.12",
