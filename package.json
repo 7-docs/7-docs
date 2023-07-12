@@ -37,11 +37,10 @@
   ],
   "scripts": {
     "prebuild": "node ./rm-dist.js",
-    "build": "tsc --build",
+    "build": "tsc --build --verbose",
     "format": "remark README.md -o",
     "knip": "knip",
-    "prepublishOnly": "npm run build",
-    "release": "npm run release --workspaces && release-it",
+    "release": "npm run build && npm run release --workspaces && release-it",
     "watch": "tsc --build --watch"
   },
   "remarkConfig": {
