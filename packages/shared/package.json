@@ -1,6 +1,6 @@
 {
   "name": "@7-docs/shared",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "Shared utilities for 7-docs core and packages",
   "homepage": "https://github.com/7-docs/7-docs",
   "bugs": "https://github.com/7-docs/7-docs/issues",
