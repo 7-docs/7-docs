@@ -6,7 +6,7 @@ type File = {
   content: Buffer;
 };
 
-export type FetchFiles = (identifiers: string[], options: { repo: string }) => Promise<Array<File>>;
+export type FetchFiles = (identifiers: string[], options: { repo: string; ignore: string[] }) => Promise<Array<File>>;
 
 interface Vector {
   id: string;

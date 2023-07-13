@@ -174,6 +174,14 @@ Crawl content from web pages:
 
 When you see the `cannot find module "canvas"` error, please see [node-canvas#compiling][21].
 
+### Ignore files
+
+To exclude files from ingestion, use the `--ignore` argument:
+
+```shell
+7d ingest  --files 'docs/**/*.md' --ignore 'folder/*' --ignore 'dir/file.md' --ignore '**/ignore.md'
+```
+
 ## Query
 
 Now you can start asking questions about it:

@@ -11,7 +11,7 @@ export const sources = {
 export const fetchDocuments = async (
   source: keyof typeof sources,
   identifiers: string[],
-  options: { repo: string }
+  options: { repo: string; ignore: string[] }
 ) => {
   return sources[source].fetchFiles(identifiers, options);
 };

@@ -18,6 +18,7 @@ const targets = {
 type Options = {
   source?: string;
   sourceIdentifiers: string[];
+  ignore: string[];
   repo: string;
   db?: string;
   namespace: string;
@@ -27,7 +28,7 @@ type Options = {
 const isValidSource = (source?: string): source is keyof typeof sources => Boolean(source && source in sources);
 const isValidTarget = (target?: string): target is keyof typeof targets => Boolean(target && target in targets);
 
-export const ingest = async ({ source, sourceIdentifiers, repo, db, namespace, isDryRun }: Options) => {
+export const ingest = async ({ source, sourceIdentifiers, ignore, repo, db, namespace, isDryRun }: Options) => {
   if (!isValidSource(source)) throw new Error(`Invalid --source: ${source}`);
   if (!isValidTarget(db)) throw new Error(`Invalid --db: ${db}`);
   if (source === 'github' && !repo) throw new Error('No --repo provided');
@@ -36,7 +37,7 @@ export const ingest = async ({ source, sourceIdentifiers, repo, db, namespace, i
 
   const spinner = ora(`Fetching files`).start();
 
-  const files = await fetchDocuments(source, sourceIdentifiers, { repo });
+  const files = await fetchDocuments(source, sourceIdentifiers, { repo, ignore });
 
   spinner.succeed();
 

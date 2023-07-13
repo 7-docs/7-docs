@@ -6,7 +6,7 @@ const getFileData = async (filePath: string) => {
   return { filePath, url: '', content: await fs.readFile(filePath) };
 };
 
-export const fetchFiles: FetchFiles = async patterns => {
-  const files = await fg(patterns);
+export const fetchFiles: FetchFiles = async (patterns, { ignore }) => {
+  const files = await fg(patterns, { ignore });
   return Promise.all(files.map(getFileData));
 };

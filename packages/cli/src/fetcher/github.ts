@@ -29,9 +29,11 @@ const getTree = async (repoId: string, tree_sha = 'HEAD'): Promise<Tree> => {
   return response.data.tree;
 };
 
-export const fetchFiles: FetchFiles = async (patterns, { repo: repoId }) => {
+export const fetchFiles: FetchFiles = async (patterns, { repo: repoId, ignore }) => {
   const tree = await getTree(repoId);
-  const files = tree.filter(file => file.path && file.type === 'blob' && micromatch.isMatch(file.path, patterns));
+  const files = tree.filter(
+    file => file.path && file.type === 'blob' && micromatch.isMatch(file.path, patterns, { ignore })
+  );
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   return Promise.all(files.map(file => getFileData(repoId, file.path!)));
 };
