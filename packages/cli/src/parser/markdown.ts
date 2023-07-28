@@ -4,13 +4,14 @@ import { remark } from 'remark';
 import frontmatter from 'remark-frontmatter';
 import gfm from 'remark-gfm';
 import inlineLinks from 'remark-inline-links';
+import mdx from 'remark-mdx';
 import { u } from 'unist-builder';
 import yaml from 'yaml';
 import { splitContentAtSentence } from './util.js';
 import type { DocumentParser } from '../types.js';
 import type { Root, Literal, PhrasingContent } from 'mdast';
 
-const remarkInstance = remark().use(gfm).use(frontmatter).use(inlineLinks);
+const remarkInstance = remark().use(frontmatter).use(gfm).use(inlineLinks).use(mdx);
 
 type Section = {
   title: string;

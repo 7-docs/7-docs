@@ -8,6 +8,7 @@ import type { AsyncDocumentParser, DocumentParser } from '../types.js';
 const parsers: Record<string, DocumentParser | AsyncDocumentParser> = {
   '.html': HTMLParser,
   '.md': MarkdownParser,
+  '.mdx': MarkdownParser,
   '.markdown': MarkdownParser,
   '.pdf': PDFParser,
   default: TextParser
