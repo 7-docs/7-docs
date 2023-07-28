@@ -17,7 +17,7 @@ import { getCompletionHandler, pinecone } from 'https://esm.sh/@7-docs/edge'; //
 
 const namespace = 'namespace-within-pinecone-index';
 
-const sytem = 'Answer the question using the provided context.';
+const system = 'Answer the question using the provided context.';
 
 const prompt = `Context: {CONTEXT}
 Question: {QUERY}
@@ -46,7 +46,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js'; // from '@s
 
 const namespace = 'table-in-supabase';
 
-const sytem = 'Answer the question using the provided context.';
+const system = 'Answer the question using the provided context.';
 
 const prompt = `Context: {CONTEXT}
 Question: {QUERY}
