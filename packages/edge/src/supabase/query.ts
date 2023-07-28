@@ -23,5 +23,10 @@ export const query: Query = async ({ client, namespace, vector }) => {
 
   if (error instanceof Error) throw error;
 
-  return (data as Results)?.map(d => JSON.parse(d.metadata)) ?? [];
+  return (
+    (data as Results)?.map(d => {
+      const metadata = JSON.parse(d.metadata);
+      return { ...metadata, score: d.similarity };
+    }) ?? []
+  );
 };

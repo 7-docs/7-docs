@@ -3,8 +3,12 @@ export interface MetaData {
   filePath: string;
   url: string;
   content: string;
-  title: string;
-  header?: string;
+  title: string; // document title
+  header?: string; // section header
+}
+
+export interface StreamMetaData extends Partial<MetaData> {
+  score?: number;
 }
 
 export interface Usage {
@@ -47,8 +51,3 @@ export interface CompletionEventData extends BaseEventData {
 }
 
 export type EventData = CompletionEventData | ChatCompletionEventData;
-
-export type StreamMetaData = {
-  title: string;
-  url: string;
-};

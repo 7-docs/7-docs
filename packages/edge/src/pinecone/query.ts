@@ -23,5 +23,8 @@ export const query: Query = async ({ url, token, vector, namespace }) => {
 
   const data: QueryResponse = await response.json();
   const matches = data.matches?.sort(sortByScoreDesc) ?? [];
-  return matches.map(match => match.metadata).filter((m): m is MetaData => !!m) ?? [];
+
+  return matches
+    .map(match => ({ ...match.metadata, score: match.score } as MetaData))
+    .filter((m): m is MetaData => !!m);
 };
