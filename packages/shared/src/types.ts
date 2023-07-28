@@ -5,11 +5,10 @@ export interface MetaData {
   content: string;
   title: string; // document title
   header?: string; // section header
-}
-
-export interface StreamMetaData extends Partial<MetaData> {
   score?: number;
 }
+
+export type StreamMetaData = Partial<MetaData>;
 
 export interface Usage {
   prompt_tokens: number;
