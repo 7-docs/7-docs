@@ -32,22 +32,26 @@ interface BaseEventData {
   model: string;
 }
 
+type ChatCompletionChoice = {
+  delta: {
+    content: string;
+  };
+};
+
 export interface ChatCompletionEventData extends BaseEventData {
   object: 'chat.completion.chunk';
-  choices: {
-    delta: {
-      content: string;
-    };
-  }[];
+  choices: ChatCompletionChoice[];
 }
+
+type CompletionChoice = {
+  text: string;
+  index: number;
+  finish_reason: string;
+};
 
 export interface CompletionEventData extends BaseEventData {
   object: 'text_completion';
-  choices: {
-    text: string;
-    index: number;
-    finish_reason: string;
-  }[];
+  choices: CompletionChoice[];
 }
 
 export type EventData = CompletionEventData | ChatCompletionEventData;
