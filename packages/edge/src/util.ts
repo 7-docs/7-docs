@@ -1,4 +1,4 @@
-import type { ChatCompletionEventData, CompletionEventData, EventData, Params } from '@7-docs/shared';
+import type { ChatCompletionEventData, CompletionEventData, EventData, Params, StreamMetaData } from '@7-docs/shared';
 import type { CreateChatCompletionResponse } from 'openai';
 
 export const getParams = async (req: Request): Promise<Params> => {
@@ -38,3 +38,12 @@ export const getDelta = (data: EventData) =>
   isChatCompletion(data) ? data.choices[0].delta.content : isCompletion(data) ? data.choices[0].text : '';
 
 export const getText = (response: CreateChatCompletionResponse) => response.choices[0].message?.content;
+
+export const pickFields =
+  (keys: string[]) =>
+  (results: StreamMetaData): StreamMetaData => {
+    const picked: StreamMetaData = {};
+    // @ts-ignore TODO
+    for (const key of keys) if (typeof results[key] !== 'undefined') picked[key] = results[key];
+    return picked;
+  };

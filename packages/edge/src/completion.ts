@@ -2,7 +2,7 @@ import { uniqueByProperty, getPrompt } from '@7-docs/shared';
 import { OpenAI } from './openai/v1/client.js';
 import { isChatCompletionModel } from './openai/v1/util.js';
 import { TransformWithEvent } from './util/stream.js';
-import { getParams, streamResponse } from './util.js';
+import { getParams, pickFields, streamResponse } from './util.js';
 import type { MetaData, StreamMetaData } from '@7-docs/shared';
 import type { ChatCompletionRequestMessage } from 'openai';
 
@@ -11,10 +11,11 @@ interface Options {
   query: (vector: number[]) => Promise<MetaData[]>;
   system?: string;
   prompt?: string;
+  fields?: string;
 }
 
 export const getCompletionHandler = (options: Options) => {
-  const { OPENAI_API_KEY, system, query, prompt } = options;
+  const { OPENAI_API_KEY, system, query, prompt, fields = 'title,url,score' } = options;
 
   if (!OPENAI_API_KEY) throw new Error('OPENAI_API_KEY required');
 
@@ -46,7 +47,9 @@ export const getCompletionHandler = (options: Options) => {
     const finalPrompt = getPrompt({ prompt, context, query: input });
 
     const uniqueByUrl = uniqueByProperty(queryResults, 'url');
-    const metadata: StreamMetaData[] = uniqueByUrl.map(m => ({ title: m.title, url: m.url }));
+    const keys = fields.split(',');
+    const metadata: StreamMetaData[] = uniqueByUrl.map(pickFields(keys));
+
     const streamWithEvent = new TransformWithEvent({ event: 'metadata', data: JSON.stringify(metadata) });
 
     if (isChatCompletionModel(completion_model)) {
