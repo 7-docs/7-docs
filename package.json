@@ -52,20 +52,20 @@
     "@7-docs/cli": "0.3.1"
   },
   "devDependencies": {
-    "@release-it/bumper": "^4.0.2",
-    "@types/node": "^20.3.3",
-    "@typescript-eslint/eslint-plugin": "^5.61.0",
-    "@typescript-eslint/parser": "^5.61.0",
-    "eslint": "^8.44.0",
+    "@release-it/bumper": "^5.1.0",
+    "@types/node": "^20.5.7",
+    "@typescript-eslint/eslint-plugin": "^6.5.0",
+    "@typescript-eslint/parser": "^6.5.0",
+    "eslint": "^8.48.0",
     "eslint-import-resolver-exports": "^1.0.0-beta.5",
-    "eslint-import-resolver-typescript": "^3.5.5",
-    "eslint-plugin-import": "^2.27.5",
-    "fast-glob": "^3.3.0",
-    "knip": "^2.14.3",
-    "release-it": "^15.11.0",
+    "eslint-import-resolver-typescript": "^3.6.0",
+    "eslint-plugin-import": "^2.28.1",
+    "fast-glob": "^3.3.1",
+    "knip": "^2.21.0",
+    "release-it": "^16.1.5",
     "remark-cli": "^11.0.0",
     "remark-preset-webpro": "^0.0.3",
-    "typescript": "^5.1.6"
+    "typescript": "5.1.6"
   },
   "release-it": {
     "git": {

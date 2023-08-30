@@ -9,7 +9,7 @@ import { u } from 'unist-builder';
 import yaml from 'yaml';
 import { splitContentAtSentence } from './util.js';
 import type { DocumentParser } from '../types.js';
-import type { Root, Literal, PhrasingContent } from 'mdast';
+import type { Root, Literal, Node } from 'mdast';
 
 const remarkInstance = remark().use(frontmatter).use(gfm).use(inlineLinks).use(mdx);
 
@@ -19,8 +19,7 @@ type Section = {
   tree: Root;
 };
 
-// @ts-ignore TODO
-const isLiteral = (node: PhrasingContent): node is Literal => 'value' in node;
+const isLiteral = (node: Node): node is Literal => 'value' in node;
 
 export const parser: DocumentParser = (markdown, maxLength) => {
   const ast = remarkInstance.parse(markdown);
@@ -50,9 +49,11 @@ export const parser: DocumentParser = (markdown, maxLength) => {
         }
       }
       const tree = u('root', [node]);
+      // @ts-ignore TODO
       return trees.concat({ title, header: sectionHeader, tree });
     }
 
+    // @ts-ignore TODO
     lastTree.tree.children.push(node);
     return trees;
   }, []);

@@ -51,30 +51,30 @@
   "dependencies": {
     "@7-docs/edge": "0.3.1",
     "@7-docs/shared": "0.3.1",
-    "@octokit/rest": "^19.0.7",
-    "@supabase/supabase-js": "^2.21.0",
+    "@octokit/rest": "^20.0.1",
+    "@supabase/supabase-js": "^2.33.1",
     "cheerio": "^1.0.0-rc.12",
     "dotenv": "^16.0.3",
     "fast-glob": "^3.2.12",
     "isomorphic-unfetch": "^4.0.2",
-    "mdast-util-gfm": "^2.0.2",
-    "mdast-util-to-markdown": "^1.5.0",
+    "mdast-util-gfm": "^3.0.0",
+    "mdast-util-to-markdown": "^2.1.0",
     "micromatch": "^4.0.5",
-    "ora": "^6.3.0",
+    "ora": "^7.0.1",
     "path2d-polyfill": "^2.0.1",
-    "pdfjs-dist": "^3.6.172",
-    "remark": "^14.0.2",
+    "pdfjs-dist": "^3.10.111",
+    "remark": "^14.0.3",
     "remark-frontmatter": "^4.0.1",
     "remark-gfm": "^3.0.1",
     "remark-inline-links": "^6.0.1",
     "remark-mdx": "^2.3.0",
-    "unist-builder": "^3.0.1",
-    "yaml": "^2.2.2"
+    "unist-builder": "^4.0.0",
+    "yaml": "^2.3.2"
   },
   "devDependencies": {
     "@types/micromatch": "^4.0.2",
     "mdast": "^3.0.0",
-    "openai": "^3.2.1"
+    "openai": "3.2.1"
   },
   "publishConfig": {
     "access": "public"
