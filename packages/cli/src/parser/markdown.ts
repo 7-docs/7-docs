@@ -15,6 +15,7 @@ const remarkInstance = remark().use(frontmatter).use(gfm).use(inlineLinks).use(m
 
 type Section = {
   title: string;
+  header: string;
   tree: Root;
 };
 
@@ -38,14 +39,18 @@ export const parser: DocumentParser = (markdown, maxLength) => {
 
     if (!lastTree?.tree || node.type === 'heading') {
       let title = '';
+      let sectionHeader = '';
       if (node.type === 'heading') {
         title = node.children.map(child => (isLiteral(child) ? child.value : '')).join(' ');
         if (node.depth === 1 && !documentTitle) {
           documentTitle = title;
         }
+        if (node.depth > 1 && !sectionHeader) {
+          sectionHeader = title;
+        }
       }
       const tree = u('root', [node]);
-      return trees.concat({ title, tree });
+      return trees.concat({ title, header: sectionHeader, tree });
     }
 
     lastTree.tree.children.push(node);
@@ -54,12 +59,13 @@ export const parser: DocumentParser = (markdown, maxLength) => {
 
   const sectionContents = sectionTrees.map(section => ({
     title: section.title,
+    header: section.header,
     content: toMarkdown(section.tree, { extensions: [gfmToMarkdown()] })
   }));
 
   const sections = sectionContents.flatMap(section => {
     const subsections = splitContentAtSentence(section.content, maxLength);
-    return subsections.map(s => ({ title: section.title, content: s }));
+    return subsections.map(s => ({ title: section.title, header: section.header, content: s }));
   });
 
   return {
