@@ -3,7 +3,7 @@
     "allowSyntheticDefaultImports": true,
     "declaration": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "ESNext",
+    "module": "nodenext",
     "moduleResolution": "nodenext",
     "outDir": "dist",
     "rootDir": "src",
