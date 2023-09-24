@@ -1,6 +1,7 @@
 import { extname } from 'node:path';
 import { parser as HTMLParser } from './html.js';
-import { parser as MarkdownParser } from './markdown.js';
+import { parser as MarkdownParser } from './md.js';
+import { parser as MDXParser } from './mdx.js';
 import { parser as PDFParser } from './pdf.js';
 import { parser as TextParser } from './text.js';
 import type { AsyncDocumentParser, DocumentParser } from '../types.js';
@@ -8,7 +9,7 @@ import type { AsyncDocumentParser, DocumentParser } from '../types.js';
 const parsers: Record<string, DocumentParser | AsyncDocumentParser> = {
   '.html': HTMLParser,
   '.md': MarkdownParser,
-  '.mdx': MarkdownParser,
+  '.mdx': MDXParser,
   '.markdown': MarkdownParser,
   '.pdf': PDFParser,
   default: TextParser
