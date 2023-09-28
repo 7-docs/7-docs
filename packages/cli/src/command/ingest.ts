@@ -75,7 +75,7 @@ export const ingest = async ({ source, sourceIdentifiers, ignore, repo, db, name
         const vectors = embeddings.map((values, index) => {
           const section = sections[index];
           const id = generateId(filePath + '\n' + section.content.trim());
-          const metadata: MetaData = { title, url, filePath, content: section.content, header: section.header };
+          const metadata: MetaData = { title, url, filePath, content: section.content, header: section.header, tags: section.tags };
           return { id, values, metadata };
         });
 

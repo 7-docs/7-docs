@@ -25,6 +25,7 @@ export abstract class VectorDatabase {
 export interface DocumentSection {
   header?: string;
   content: string;
+  tags?: string[];
 }
 
 type ParsedDocument = { title?: string; sections: DocumentSection[] };
