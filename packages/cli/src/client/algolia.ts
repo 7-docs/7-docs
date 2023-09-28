@@ -39,9 +39,10 @@ export class Algolia implements VectorDatabase {
   }
 
   async upsertVectors({ vectors }: UpsertVectorOptions) {
-    const objects = vectors.map(v => ({ objectID: v.id, ...v.metadata }));
     const index = this.getIndex();
     if (!index) return 0;
+
+    const objects = vectors.map(v => ({ objectID: v.id, ...v.metadata }));
     const { objectIDs } = await index.saveObjects(objects);
     return objectIDs.length;
   }
