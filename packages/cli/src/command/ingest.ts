@@ -1,5 +1,6 @@
 import { OpenAI } from '@7-docs/edge';
 import { CHUNK_SIZE, OPENAI_EMBEDDING_MODEL } from '@7-docs/shared';
+import { Algolia } from '../client/algolia.js';
 import { Pinecone } from '../client/pinecone.js';
 import { Supabase } from '../client/supabase.js';
 import { OPENAI_API_KEY } from '../env.js';
@@ -12,7 +13,8 @@ import type { MetaData } from '@7-docs/shared';
 
 const targets = {
   Pinecone,
-  Supabase
+  Supabase,
+  Algolia,
 };
 
 type Options = {
