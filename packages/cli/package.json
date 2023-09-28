@@ -16,7 +16,9 @@
     "chatgpt",
     "openai",
     "pinecone",
-    "supabase"
+    "supabase",
+    "algolia",
+    "algoliasearch"
   ],
   "homepage": "https://github.com/7-docs/7-docs",
   "bugs": "https://github.com/7-docs/7-docs/issues",

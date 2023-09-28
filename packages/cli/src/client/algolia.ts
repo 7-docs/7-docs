@@ -1,7 +1,11 @@
-import { MetaData } from '@7-docs/shared';
-import algoliasearch, { SearchClient } from 'algoliasearch';
-import { ALGOLIA_APP_ID, ALGOLIA_API_KEY, ALGOLIA_INDEX_NAME } from "../env.js";
-import type { UpsertVectorOptions, VectorDatabase, QueryOptions } from "../types.js";
+import algoliasearch, { type SearchClient } from 'algoliasearch';
+import { ALGOLIA_APP_ID, ALGOLIA_API_KEY, ALGOLIA_INDEX_NAME } from '../env.js';
+import type { UpsertVectorOptions, VectorDatabase, QueryOptions } from '../types.js';
+import type { MetaData } from '@7-docs/shared';
+
+interface MetaDataHit extends MetaData {
+  metadata: Record<string, unknown>;
+}
 
 export class Algolia implements VectorDatabase {
   appId: string;
@@ -19,38 +23,34 @@ export class Algolia implements VectorDatabase {
   }
 
   setClient() {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
+    // @ts-ignore This expression is not callable, ts(2349)
     const client = algoliasearch(this.appId, this.apiKey);
     this.client = client;
   }
 
-  getClient(): SearchClient {
+  getClient() {
     if (!this.client) this.setClient();
-    return this.client as SearchClient;
+    return this.client;
   }
 
   getIndex() {
     const client = this.getClient();
-    console.log('client', client);
-    console.log('indexName', this.indexName);
     return client?.initIndex(this.indexName);
   }
 
-  async upsertVectors({
-    vectors
-  }: UpsertVectorOptions) {
-    const index = this.getIndex();
+  async upsertVectors({ vectors }: UpsertVectorOptions) {
     const objects = vectors.map(v => ({ objectID: v.id, ...v.metadata }));
+    const index = this.getIndex();
+    if (!index) return 0;
     const { objectIDs } = await index.saveObjects(objects);
     return objectIDs.length;
   }
 
   async query({ embedding }: QueryOptions): Promise<MetaData[]> {
     const index = this.getIndex();
-    const { hits } = await index.search(embedding.join(','));
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return hits.map((hit: any) => ({
+    if (!index) return [];
+    const { hits } = await index.search<MetaDataHit>(embedding.join(','));
+    return hits.map(hit => ({
       filePath: hit.filePath,
       url: hit.url,
       content: hit.content,
