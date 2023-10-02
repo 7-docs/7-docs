@@ -34,7 +34,7 @@ export const createParser =
       if (node.type === 'yaml') {
         const parsedYaml = yaml.parse(node.value);
         if (parsedYaml.title) documentTitle = parsedYaml.title;
-        if(parsedYaml.tags) documentTags = parsedYaml.tags;
+        if (parsedYaml.tags) documentTags = parsedYaml.tags;
         return trees;
       }
 
@@ -66,7 +66,7 @@ export const createParser =
       title: section.title,
       header: section.header,
       tags: documentTags,
-      content: toMarkdown(section.tree, { extensions: [gfmToMarkdown()] }),
+      content: toMarkdown(section.tree, { extensions: [gfmToMarkdown()] })
     }));
 
     const sections = sectionContents.flatMap(section => {
