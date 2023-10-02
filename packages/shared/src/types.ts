@@ -6,6 +6,7 @@ export interface MetaData {
   title: string; // document title
   header?: string; // section header
   score?: number;
+  tags?: string[];
 }
 
 export type StreamMetaData = Partial<MetaData>;
