@@ -16,6 +16,7 @@ type Section = {
   title: string;
   header: string;
   tree: Root;
+  tags?: string[];
 };
 
 const isLiteral = (node: Node): node is Literal => 'value' in node;
@@ -27,11 +28,13 @@ export const createParser =
     const tree = processor.runSync(ast);
 
     let documentTitle: string | null = null;
+    let documentTags: string[] = [];
 
     const sectionTrees = tree.children.reduce<Section[]>((trees, node) => {
       if (node.type === 'yaml') {
         const parsedYaml = yaml.parse(node.value);
         if (parsedYaml.title) documentTitle = parsedYaml.title;
+        if(parsedYaml.tags) documentTags = parsedYaml.tags;
         return trees;
       }
 
@@ -62,12 +65,13 @@ export const createParser =
     const sectionContents = sectionTrees.map(section => ({
       title: section.title,
       header: section.header,
-      content: toMarkdown(section.tree, { extensions: [gfmToMarkdown()] })
+      tags: documentTags,
+      content: toMarkdown(section.tree, { extensions: [gfmToMarkdown()] }),
     }));
 
     const sections = sectionContents.flatMap(section => {
       const subsections = splitContentAtSentence(section.content, maxLength);
-      return subsections.map(s => ({ title: section.title, header: section.header, content: s }));
+      return subsections.map(s => ({ title: section.title, header: section.header, tags: section.tags, content: s }));
     });
 
     return {

@@ -17,13 +17,13 @@ ingest
   --repo [owner/repo]     Repository to fetch file contents from (only required for --source github)
   --files [pattern]       Glob patterns for the source files (can be repeated)
   --url [url]             URL to fetch content from (use with --http, can be repeated)
-  --db [name]             Target database to store the embedding vectors. Options: pinecone, supabase (default: pinecone)
+  --db [name]             Target database to store the embedding vectors. Options: pinecone, supabase, algolia (default: pinecone)
   --namespace [name]      Namespace to store the embedding vectors
   --ignore [pattern]      Exclude files matching this pattern (can be repeated)
 
 query
   [input]                 Query input
-  --db [name]             Database to query. Options: pinecone, supabase (default: pinecone)
+  --db [name]             Database to query. Options: pinecone, supabase, algolia (default: pinecone)
   --namespace [name]      Namespace to query
   --no-stream             Don't stream the response
 

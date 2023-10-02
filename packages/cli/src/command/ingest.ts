@@ -1,5 +1,6 @@
 import { OpenAI } from '@7-docs/edge';
 import { CHUNK_SIZE, OPENAI_EMBEDDING_MODEL } from '@7-docs/shared';
+import { Algolia } from '../client/algolia.js';
 import { Pinecone } from '../client/pinecone.js';
 import { Supabase } from '../client/supabase.js';
 import { OPENAI_API_KEY } from '../env.js';
@@ -12,7 +13,8 @@ import type { MetaData } from '@7-docs/shared';
 
 const targets = {
   Pinecone,
-  Supabase
+  Supabase,
+  Algolia,
 };
 
 type Options = {
@@ -73,7 +75,7 @@ export const ingest = async ({ source, sourceIdentifiers, ignore, repo, db, name
         const vectors = embeddings.map((values, index) => {
           const section = sections[index];
           const id = generateId(filePath + '\n' + section.content.trim());
-          const metadata: MetaData = { title, url, filePath, content: section.content, header: section.header };
+          const metadata: MetaData = { title, url, filePath, content: section.content, header: section.header, tags: section.tags };
           return { id, values, metadata };
         });
 
