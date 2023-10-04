@@ -24,7 +24,8 @@ export const main = async () => {
       environment,
       input,
       stream,
-      isDryRun
+      isDryRun,
+      isSkipEmbeddings
     } = await parseConfig();
 
     switch (command) {
@@ -50,7 +51,7 @@ export const main = async () => {
         break;
       }
       case 'ingest': {
-        await ingest({ source, db, repo, sourceIdentifiers, ignore, namespace, isDryRun });
+        await ingest({ source, db, repo, sourceIdentifiers, ignore, namespace, isDryRun, isSkipEmbeddings });
         break;
       }
       case 'query': {

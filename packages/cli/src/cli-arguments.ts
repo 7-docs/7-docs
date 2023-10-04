@@ -20,6 +20,8 @@ ingest
   --db [name]             Target database to store the embedding vectors. Options: pinecone, supabase, algolia (default: pinecone)
   --namespace [name]      Namespace to store the embedding vectors
   --ignore [pattern]      Exclude files matching this pattern (can be repeated)
+  --dry-run               Stop after parsing the documents, but before calling the OpenAI create embeddings endpoint
+  --skip-embeddings       Skip creating embeddings (bypass the OpenAI create embeddings, but still upsert metadata)
 
 query
   [input]                 Query input
@@ -70,7 +72,8 @@ export const parseConfig = async () => {
       namespace: { type: 'string' },
       db: { type: 'string' },
       'no-stream': { type: 'boolean', default: false },
-      'dry-run': { type: 'boolean', default: false }
+      'dry-run': { type: 'boolean', default: false },
+      'skip-embeddings': { type: 'boolean', default: false }
     }
   });
 
@@ -104,6 +107,7 @@ export const parseConfig = async () => {
     namespace,
     input,
     stream: !parsedArgs.values['no-stream'] && nodeMajor >= 18,
-    isDryRun: !!parsedArgs.values['dry-run']
+    isDryRun: !!parsedArgs.values['dry-run'],
+    isSkipEmbeddings: !!parsedArgs.values['skip-embeddings']
   };
 };

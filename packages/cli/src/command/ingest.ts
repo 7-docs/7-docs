@@ -25,12 +25,17 @@ type Options = {
   db?: string;
   namespace: string;
   isDryRun: boolean;
+  isSkipEmbeddings: boolean;
 };
+
+const dummyEmbedding = { embeddings: [], usage: getInitUsage() };
 
 const isValidSource = (source?: string): source is keyof typeof sources => Boolean(source && source in sources);
 const isValidTarget = (target?: string): target is keyof typeof targets => Boolean(target && target in targets);
 
-export const ingest = async ({ source, sourceIdentifiers, ignore, repo, db, namespace, isDryRun }: Options) => {
+export const ingest = async (options: Options) => {
+  const { source, sourceIdentifiers, ignore, repo, db, namespace, isDryRun, isSkipEmbeddings } = options;
+
   if (!isValidSource(source)) throw new Error(`Invalid --source: ${source}`);
   if (!isValidTarget(db)) throw new Error(`Invalid --db: ${db}`);
   if (source === 'github' && !repo) throw new Error('No --repo provided');
@@ -67,7 +72,9 @@ export const ingest = async ({ source, sourceIdentifiers, ignore, repo, db, name
         if (isDryRun) continue;
 
         const requests = sections.map(section => {
-          return client.createEmbeddings({ input: section.content, model: OPENAI_EMBEDDING_MODEL });
+          return isSkipEmbeddings
+            ? dummyEmbedding
+            : client.createEmbeddings({ input: section.content, model: OPENAI_EMBEDDING_MODEL });
         });
         const responses = await Promise.all(requests);
         const embeddings = responses.flatMap(response => response.embeddings);
