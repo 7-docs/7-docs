@@ -1,6 +1,6 @@
 {
   "name": "7-docs",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Build a knowledge base and ask it questions through ChatGPT",
   "keywords": [
     "docs",
@@ -49,7 +49,7 @@
     ]
   },
   "dependencies": {
-    "@7-docs/cli": "0.4.0"
+    "@7-docs/cli": "0.5.0"
   },
   "devDependencies": {
     "@release-it/bumper": "^5.1.0",
