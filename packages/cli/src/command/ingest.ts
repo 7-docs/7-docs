@@ -40,7 +40,7 @@ export const ingest = async (options: Options) => {
   if (!isValidTarget(db)) throw new Error(`Invalid --db: ${db}`);
   if (source === 'github' && !repo) throw new Error('No --repo provided');
 
-  const client = new OpenAI(OPENAI_API_KEY);
+  const client = !isSkipEmbeddings && new OpenAI(OPENAI_API_KEY);
 
   const spinner = ora(`Fetching files`).start();
 
