@@ -79,8 +79,8 @@ export const ingest = async (options: Options) => {
         const responses = await Promise.all(requests);
         const embeddings = responses.flatMap(response => response.embeddings);
 
-        const vectors = embeddings.map((values, index) => {
-          const section = sections[index];
+        const vectors = sections.map((section, index) => {
+          const values = embeddings[index] || [];
           const id = generateId(filePath + '\n' + section.content.trim());
           const metadata: MetaData = {
             title,
