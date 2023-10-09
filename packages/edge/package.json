@@ -1,6 +1,6 @@
 {
   "name": "@7-docs/edge",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Dependency-free package for 7-docs to query your content from anywhere JavaScript can run",
   "homepage": "https://github.com/7-docs/7-docs",
   "bugs": "https://github.com/7-docs/7-docs/issues",
@@ -31,7 +31,7 @@
     ]
   },
   "dependencies": {
-    "@7-docs/shared": "0.5.0"
+    "@7-docs/shared": "0.5.1"
   },
   "devDependencies": {
     "@pinecone-database/pinecone": "^0.1.6",

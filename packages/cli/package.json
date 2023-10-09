@@ -1,6 +1,6 @@
 {
   "name": "@7-docs/cli",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Command-line tool for 7-docs to ingest content",
   "keywords": [
     "cli",
@@ -51,8 +51,8 @@
     ]
   },
   "dependencies": {
-    "@7-docs/edge": "0.5.0",
-    "@7-docs/shared": "0.5.0",
+    "@7-docs/edge": "0.5.1",
+    "@7-docs/shared": "0.5.1",
     "@octokit/rest": "^20.0.1",
     "@supabase/supabase-js": "^2.33.1",
     "algoliasearch": "^4.20.0",
